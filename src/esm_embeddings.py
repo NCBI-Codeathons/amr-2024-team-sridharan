@@ -1,14 +1,10 @@
-import torch 
-from google.cloud import bigquery
+from transformers import AutoTokenizer, EsmModel
+import torch
 
-client = bigquery.Client()
+tokenizer = AutoTokenizer.from_pretrained("facebook/esm2_t6_8M_UR50D")
+model = EsmModel.from_pretrained("facebook/esm2_t6_8M_UR50D")
 
-# Perform a query.
-QUERY = (
-    'SELECT * FROM `ncbi-2024-amr-codeathon.ESKAPE_species_AMR` '
-    'LIMIT 100')
-query_job = client.query(QUERY)  # API request
-rows = query_job.result()  # Waits for query to finish
+inputs = tokenizer("Hello, my dog is cute", return_tensors="pt")
+outputs = model(**inputs)
 
-for row in rows:
-    print(row.name)
+last_hidden_states = outputs.last_hidden_state
