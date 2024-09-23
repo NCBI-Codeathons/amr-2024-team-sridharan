@@ -10,7 +10,9 @@ List of participants and affiliations:
 
 Idenfity novel antibiotic resistances in organisms using graph representation learning (WIP)
 
-## Approach
+## Approach (WIP)
+
+![Graphical abstract](misc/Workflow.drawio.png)
 
 ## Results
 
