@@ -1,10 +1,14 @@
-# Team Project Name
+# GrAMR (WIP)
 
 List of participants and affiliations:
-- Participant, Affiliation (Team Leader)
-- Participant, Affiliation
+- Ganeshiny Sridharan, University of Colombo  (Team Leader)
+- Janith Weeraman, University of Calgary 
+- Nimna Alupotha Gamage, University of Colombo
+- Nuwan Medawaththa, University of Colombo
 
 ## Project Goals
+
+Idenfity novel antibiotic resistances in organisms using graph representation learning (WIP)
 
 ## Approach
 
