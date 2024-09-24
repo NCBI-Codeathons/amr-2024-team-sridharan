@@ -1,4 +1,12 @@
+"""
+This file contains functions to generate sequence embeddings from a Facebook/ESM-2 model 
+
+"""
+
 import torch
+import polars as pl
+from gs_to_dict import parse_fasta_from_gcs
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def generate_embeddings(
@@ -24,6 +32,7 @@ def generate_embeddings(
         sequence_representations.append(token_representations[i, 1 : len(seq) + 1].mean(0))
     
     return [(batch_labels[i],rep) for i,rep in enumerate(sequence_representations)] # Embedding dim is 1280
+
 
 if __name__=="__main__":
     data = [
