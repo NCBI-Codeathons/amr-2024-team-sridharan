@@ -17,9 +17,9 @@ if endindex > data.shape[0]: endindex = data.shape[0]
 
 fastadict = protein_url2fasta_json(data, 'temp/fastas/indexes',startindex=startindex, endindex=endindex)
 
-embeddings = [proteindict.items() for key,proteindict in fastadict.items()]
+# embeddings = [proteindict.items() for key,proteindict in fastadict.items()]
 
-embeddings = dict(generate_embeddings(embeddings))
+# embeddings = dict(generate_embeddings(embeddings))
 
-with open(f'temp/embeddings/indexes_{startindex}-{endindex}.json','w') as file:
-    json.dump(embeddings,file)
+# with open(f'temp/embeddings/indexes_{startindex}-{endindex}.json','w') as file:
+#     json.dump(embeddings,file)
