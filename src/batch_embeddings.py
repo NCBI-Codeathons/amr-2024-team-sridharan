@@ -10,6 +10,11 @@ batch_size = 2
 sequences = []
 embeddings = []
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_650M_UR50D")
+model.eval()
+model.to(device)
+
 last_embedding = os.listdir(embeddingsdir)
 if len(last_embedding)==0:
     i=0
@@ -27,7 +32,7 @@ while i<len(fastafolder):
     i += 1    
 
     if i%batch_size==0:
-        embeddings += generate_embeddings(sequences)
+        embeddings += generate_embeddings(sequences,model,alphabet)
         sequences = []
 
     if i%(batch_size*100)==0:

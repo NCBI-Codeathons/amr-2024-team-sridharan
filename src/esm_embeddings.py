@@ -10,15 +10,12 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def generate_embeddings(
         sequences, # list of tuples of the form ('header','sequence')
+        model,
+        alphabet,
         device=device, # will automatically use CUDA if its available else will fall back on cpu
 ):
 
-    model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_650M_UR50D")
     batch_converter = alphabet.get_batch_converter()
-    model.eval()
-    model.to(device)
-    print((torch.cuda.memory_allocated()//1024)//1024)
-
     # Generating data batches
     batch_labels, batch_strs, batch_tokens = batch_converter(sequences)
     with torch.no_grad():
@@ -31,8 +28,6 @@ def generate_embeddings(
     for i, (_, seq) in enumerate(sequences):
         sequence_representations.append(token_representations[i, 1 : len(seq) + 1].mean(0))
     
-    model = None
-    batch_tokens = None
     torch.cuda.empty_cache()
     return [(batch_labels[i],rep.cpu().detach()) for i,rep in enumerate(sequence_representations)] # Embedding dim is 1280
 
