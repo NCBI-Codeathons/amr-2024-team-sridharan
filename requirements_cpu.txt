@@ -2,10 +2,12 @@ polars
 pandas 
 matplotlib 
 google-cloud-bigquery
-google-cloud-storage 
+google-cloud-storage
 biopython 
 networkx
 torch --index-url https://download.pytorch.org/whl/cpu  
 torchvision --index-url https://download.pytorch.org/whl/cpu  
 torchaudio --index-url https://download.pytorch.org/whl/cpu 
 transformers
+stellargraph
+torch_geometric
