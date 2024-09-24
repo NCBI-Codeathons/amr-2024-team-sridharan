@@ -5,7 +5,7 @@ from esm_embeddings import generate_embeddings
 tempfolder = "temp/fastas/"
 embeddingsdir = "temp/embeddings/"
 fastafolder = os.listdir(tempfolder)
-batch_size = 2
+batch_size = 100
 
 embeddings = []
 
@@ -32,7 +32,7 @@ while i<len(fastafolder):
     embeddings += generate_embeddings([(file,data)],model,alphabet)
 
     if i%(batch_size*100)==0:
-        with open(f"temp/fastas/embeddings/{i}.pickle", 'wb') as handle:
+        with open(f"temp/embeddings/{i}.pickle", 'wb') as handle:
             pickle.dump(embeddings,handle)
         embeddings = []
     
