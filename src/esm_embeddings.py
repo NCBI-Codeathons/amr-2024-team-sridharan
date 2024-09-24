@@ -45,15 +45,15 @@ def protein_url2fasta_json(data,
         if i<startindex: continue
         if i>=endindex: break
 
-        newdict = parse_fasta_from_gcs(url[1])
-        fastadict.update( {url[0]:newdict} )
+        newdict = parse_fasta_from_gcs(url[1],f"{output_filename_without_json}_{url[0]}.fa.gz")
+        # fastadict.update( {url[0]:newdict} )
 
         if i%1000==0: print(f" on element {i+1}")
 
-    outputfile = f"{output_filename_without_json}_{startindex}-{endindex}.json"
-    print(outputfile)
-    with open(outputfile,'w') as file:
-        json.dump(fastadict,file)
+    # outputfile = f"{output_filename_without_json}_{startindex}-{endindex}.json"
+    # print(outputfile)
+    # with open(outputfile,'w') as file:
+    #     json.dump(fastadict,file)
     
     return fastadict
 
