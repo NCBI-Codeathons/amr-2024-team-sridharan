@@ -43,7 +43,7 @@ def protein_url2fasta_json(datasetpath,
     for i,url in enumerate(data):
         newdict = parse_fasta_from_gcs(url[1])
         fastadict.update( {url[0]:newdict} )
-        if i%1000: print(f" on element {i+1}")
+        if i%1000==0: print(f" on element {i+1}")
 
     with open(output_file,'w') as file:
         json.dump(fastadict,file)
