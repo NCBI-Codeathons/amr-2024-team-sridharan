@@ -5,6 +5,7 @@ List of participants and affiliations:
 - Janith Weeraman, University of Calgary 
 - Nimna Alupotha Gamage, University of Colombo
 - Nuwan Medawaththa, University of Colombo
+- Ruwanthika Premarathne, University of Colombo
 
 ## Project Goals
 
