@@ -1,6 +1,7 @@
-import json, argparse
+import argparse, os
 import polars as pl
-from esm_embeddings import generate_embeddings, protein_url2fasta_json
+from google.cloud import storage
+from esm_embeddings import generate_embeddings
 from gs_to_dict import parse_fasta_from_gcs
 
 parser = argparse.ArgumentParser(description='Get start and end indices')
@@ -13,13 +14,29 @@ endindex = int(args.end)
 
 dataset_path = "/shared_venv/data_from_bigquery.csv"
 data = pl.read_csv(dataset_path, separator=',')
+# Initialize Google Cloud Storage client
+client = storage.Client()
+
 if endindex > data.shape[0]: endindex = data.shape[0]
+data = data[startindex:endindex][['protein_acc','protein_url']].to_numpy()
 
-fastadict = protein_url2fasta_json(data, 'temp/fastas/indexes',startindex=startindex, endindex=endindex)
+output_path=f'temp/fastas'
 
-# embeddings = [proteindict.items() for key,proteindict in fastadict.items()]
+for i,(acc,url) in enumerate(data):
+    output_path_item = f"{output_path}/{acc}.fa.gz"
 
-# embeddings = dict(generate_embeddings(embeddings))
+    if os.path.exists(output_path_item): continue
 
-# with open(f'temp/embeddings/indexes_{startindex}-{endindex}.json','w') as file:
-#     json.dump(embeddings,file)
+    bucket_name, *file_path = url[5:].split("/")
+    file_path = "/".join(file_path)
+    # Get the bucket and the blob (file) from GCS
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(file_path)
+
+    # Download the file content as bytes
+    file_data = blob.download_as_bytes()
+
+    # save downloaded file
+    with open(output_path_item,'wb') as file:
+        file.write(file_data)
+
