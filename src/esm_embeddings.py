@@ -50,7 +50,9 @@ def protein_url2fasta_json(data,
 
         if i%1000==0: print(f" on element {i+1}")
 
-    with open(f"{output_filename_without_json}_{startindex}-{endindex}.json",'w') as file:
+    outputfile = f"{output_filename_without_json}_{startindex}-{endindex}.json"
+    print(outputfile)
+    with open(outputfile,'w') as file:
         json.dump(fastadict,file)
     
     return fastadict
