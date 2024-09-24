@@ -1,7 +1,8 @@
 polars 
 pandas 
 matplotlib 
-google-cloud-bigquery 
+google-cloud-bigquery
+google-cloud-storage 
 biopython 
 networkx
 torch --index-url https://download.pytorch.org/whl/cpu  
