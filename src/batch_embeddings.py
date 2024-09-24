@@ -5,7 +5,7 @@ from esm_embeddings import generate_embeddings
 tempfolder = "temp/fastas/"
 embeddingsdir = "temp/embeddings/"
 fastafolder = os.listdir(tempfolder)
-batch_size = 100
+batch_size = 2
 
 sequences = []
 embeddings = []
