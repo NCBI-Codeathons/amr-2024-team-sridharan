@@ -14,6 +14,21 @@ Idenfity novel antibiotic resistances in organisms using graph representation le
 
 ![Graphical abstract](misc/Workflow.png)
 
+## Explanation of the workflow
+The step-by-step explanation of the workflow is as follows;
+
+- Data preprocessing
+
+The 'MicroBIGG-E' database was used to obtain AMR-related information, specifically focusing on the ESKAPE species. For each protein sequence, a FASTA-like structure is used, consisting of amino acids. These sequences serve as input for further steps.
+
+- Embedding Generation
+
+This step likely uses a pre-trained protein language model (ESM). The Base ESM takes the protein sequences and produces embeddings representing each sequence in a high-dimensional space. The embeddings generated from the ESM model are further fine-tuned using ESM2, creating feature representations with dimensions [N, 1024], where N is the number of sequences and 1024 is the size of the embedding. This embedding captures essential information about protein sequences for AMR prediction.
+
+- AMR Class Labeling and Encoding
+
+The protein sequences are labeled according to different AMR classes. These labels are then label encoded, converting the categorical labels into numerical format for use in machine learning models. The AMR classes are represented as a multihot label vector, which is a binary vector where each entry corresponds to a specific AMR class. 
+
 ## Results
 
 ## Future Work
