@@ -29,6 +29,23 @@ This step likely uses a pre-trained protein language model (ESM). The Base ESM t
 
 The protein sequences are labeled according to different AMR classes. These labels are then label encoded, converting the categorical labels into numerical format for use in machine learning models. The AMR classes are represented as a multihot label vector, which is a binary vector where each entry corresponds to a specific AMR class. 
 
+- Graph Construction (Bi-partite Graph)
+
+A bi-partite graph is constructed where one set of nodes represents proteins and the other set represents drug classes. Edges between protein nodes and drug class nodes represent interactions, such as resistance or susceptibility. These indices represent the connections between proteins and drug classes. An edge indicates an actual relationship (such as susceptibility or resistance). If edges are formed, they are treated as actual positives (true positives).
+
+- Edge Prediction (Graph Neural Network - GCN)
+
+After the bi-partite graph is constructed, the edge prediction task is handled by a Graph Convolutional Network (GCN). The GCN aggregates information from neighboring nodes (i.e., other proteins and drug classes) to predict whether there should be an edge (relationship) between two nodes. A fully connected layer processes the pre-processed data and generates node embeddings, which are used by the GCN layers.
+Hierarchical Pooling: Hierarchical pooling techniques are applied to condense information across different layers of the GCN. This step aggregates the information across the graph and generates final node-level embeddings for classification.
+
+- Classification
+  
+After the graph processing, a classifier is used to assign the AMR class labels to the protein sequences based on the predictions from the GCN. This model attempts to predict the likelihood that a protein belongs to a particular AMR class.
+
+- Edge Prediction Output
+
+In the final step, new links (edges) are predicted between proteins and drug classes, indicating whether a protein is resistant to a specific drug class. These predicted edges form the basis of understanding the AMR protein-drug interactions.
+
 ## Results
 
 ## Future Work
