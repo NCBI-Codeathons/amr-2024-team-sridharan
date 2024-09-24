@@ -5,7 +5,6 @@ This file contains functions to generate sequence embeddings from a Facebook/ESM
 
 import torch, json
 import polars as pl
-from gs_to_dict import parse_fasta_from_gcs
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -13,6 +12,7 @@ def generate_embeddings(
         sequences, # list of tuples of the form ('header','sequence')
         device=device, # will automatically use CUDA if its available else will fall back on cpu
 ):
+    torch.set_default_dtype(torch.float16)
 
     model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_650M_UR50D")
     batch_converter = alphabet.get_batch_converter()
