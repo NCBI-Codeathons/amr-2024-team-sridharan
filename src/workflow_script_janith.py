@@ -15,7 +15,7 @@ dataset_path = "/shared_venv/data_from_bigquery.csv"
 data = pl.read_csv(dataset_path, separator=',')
 if endindex > data.shape[0]: endindex = data.shape[0]
 
-fastadict = protein_url2fasta_json(dataset_path, 'temp/fastas/indexes',startindex=startindex, endindex=endindex)
+fastadict = protein_url2fasta_json(data, 'temp/fastas/indexes',startindex=startindex, endindex=endindex)
 
 embeddings = [proteindict.items() for key,proteindict in fastadict.items()]
 
