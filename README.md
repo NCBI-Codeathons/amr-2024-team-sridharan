@@ -12,7 +12,7 @@ Idenfity novel antibiotic resistances in organisms using graph representation le
 
 ## Approach (WIP)
 
-![Graphical abstract](misc/Workflow.drawio.png)
+![Graphical abstract](misc/Workflow.png)
 
 ## Results
 
