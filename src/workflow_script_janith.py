@@ -24,7 +24,6 @@ output_path=f'temp/fastas'
 
 for i,(acc,url) in enumerate(data):
     output_path_item = f"{output_path}/{acc}.fa.gz"
-    print(output_path_item); quit()
 
     if os.path.exists(output_path_item): continue
 
