@@ -12,17 +12,17 @@ def create_protein_drug_class_tsv(input_csv, output_tsv):
     df = pd.read_csv(input_csv)
     
     # To ensure that the CSV has 'protein_acc' and 'drug_class' columns
-    if 'protein_acc' not in df.columns or 'drug_class' not in df.columns: # Must change the col names here !!!!
+    if 'protein_acc' not in df.columns or 'class' not in df.columns: # Must change the col names here !!!!
         raise ValueError("Input CSV must contain 'protein_acc' and 'drug_class' columns.")
     
     # Sort all the drug classes
-    drug_classes = sorted(df['drug_class'].unique())
+    drug_classes = sorted(df['class'].unique())
 
     protein_drug_map = {}
 
     for _, row in df.iterrows():
         protein_acc = row['protein_acc']
-        drug_class = row['drug_class']     
+        drug_class = row['class']     
         if protein_acc not in protein_drug_map:
             protein_drug_map[protein_acc] = {drug: 0 for drug in drug_classes}        
         protein_drug_map[protein_acc][drug_class] = 1
