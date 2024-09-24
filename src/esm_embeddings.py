@@ -17,6 +17,7 @@ def generate_embeddings(
     batch_converter = alphabet.get_batch_converter()
     model.eval()
     model.to(device)
+    print((torch.cuda.memory_allocated()//1024)//1024)
 
     # Generating data batches
     batch_labels, batch_strs, batch_tokens = batch_converter(sequences)
