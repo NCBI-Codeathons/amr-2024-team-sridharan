@@ -8,10 +8,10 @@ parser.add_argument('-s', '--start', type=int, default=0, help='Start index (def
 parser.add_argument('-e', '--end', type=int, default=1000, help='End index (default: 1000)')
 args = parser.parse_args()
 
-startindex = args.start
-endindex = args.end
+startindex = int(args.start)
+endindex = int(args.end)
 
-dataset_path = "data_from_bigquery.csv"
+dataset_path = "/shared_venv/data_from_bigquery.csv"
 data = pl.read_csv(dataset_path, separator=',')
 if endindex > data.shape[0]: endindex = data.shape[0]
 
