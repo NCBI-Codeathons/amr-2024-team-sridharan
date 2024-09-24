@@ -8,6 +8,6 @@ fastafolder = os.listdir(tempfolder)
 for file in fastafolder:
     # Create a BytesIO buffer for the gzip file and extract the content
     with gzip.open(os.path.join(tempfolder,file),'rt') as handle:
-        data = handle.read()
+        data = ''.join(handle.read().split('\n')[1:])
     
     print(data); quit()
