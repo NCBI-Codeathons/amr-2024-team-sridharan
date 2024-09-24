@@ -16,8 +16,6 @@ if len(last_embedding)==0:
 else:
     i = int(last_embedding[-1].split('.')[0])
 
-
-i = 0
 while i<len(fastafolder):
     file = fastafolder[i]
 
