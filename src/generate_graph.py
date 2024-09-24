@@ -39,12 +39,12 @@ data = HeteroData()
 
 data['protein'].x = protein_embeddings  # Shape [num_proteins, embedding_dim]
 
-data['drug_class'].x = drug_class_embeddings  # Shape [num_drug_classes, embedding_dim]
+data['class'].x = drug_class_embeddings  # Shape [num_drug_classes, embedding_dim]
 
-data['protein', 'interacts_with', 'drug_class'].edge_index = edge_index  # Shape [2, num_edges]
+data['protein', 'interacts_with', 'class'].edge_index = edge_index  # Shape [2, num_edges]
 
 
 print(data['protein'].x)
-print(data['drug_class'].x)
-print(data['protein', 'interacts_with', 'drug_class'].edge_index)
+print(data['class'].x)
+print(data['protein', 'interacts_with', 'class'].edge_index)
 print(data)
