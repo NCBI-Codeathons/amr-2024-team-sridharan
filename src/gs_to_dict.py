@@ -36,7 +36,8 @@ def parse_fasta_from_gcs(gcs_url):
 
     return fasta_dict
 
-# Example usage
-gcs_url = "gs://ncbi-pathogen-assemblies/Enterococcus_faecium/1361/000/DAIGVV010000255.1.fna.gz"
-fasta_dict = parse_fasta_from_gcs(gcs_url)
-print(fasta_dict)
+if __name__=="__main__":
+    # Example usage
+    gcs_url = "gs://ncbi-pathogen-assemblies/Enterococcus_faecium/1361/000/DAIGVV010000255.1.fna.gz"
+    fasta_dict = parse_fasta_from_gcs(gcs_url)
+    print(fasta_dict)
