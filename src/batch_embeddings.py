@@ -30,7 +30,7 @@ while i<len(fastafolder):
         embeddings += generate_embeddings(sequences)
         sequences = []
 
-    if i%(batch_size*1000)==0:
+    if i%(batch_size*100)==0:
         with open(f"temp/fastas/embeddings/{i}.pickle", 'wb') as handle:
             pickle.dump(embeddings,handle)
         embeddings = []
