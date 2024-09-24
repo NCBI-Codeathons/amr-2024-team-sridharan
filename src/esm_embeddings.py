@@ -43,7 +43,7 @@ def protein_url2fasta_json(data,
     fastadict = {}
     for i,url in enumerate(data):
         if i<startindex: continue
-        if i==endindex: break
+        if i>=endindex: break
 
         newdict = parse_fasta_from_gcs(url[1])
         fastadict.update( {url[0]:newdict} )
