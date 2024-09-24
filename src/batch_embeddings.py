@@ -21,6 +21,7 @@ if len(last_embedding)==0:
 else:
     i = int(last_embedding[-1].split('.')[0])
 
+input("starting loop...")
 while i<len(fastafolder):
     file = fastafolder[i]
 
