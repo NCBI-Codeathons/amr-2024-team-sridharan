@@ -33,19 +33,24 @@ def generate_embeddings(
     
     return [(batch_labels[i],rep) for i,rep in enumerate(sequence_representations)] # Embedding dim is 1280
 
-def protein_url2fasta_json(datasetpath,
-                           output_file='fastas.json'):
-    data = pl.read_csv(datasetpath, separator=',')
+def protein_url2fasta_json(data,
+                           output_filename_without_json='fastas',
+                           startindex=0,
+                           endindex=1000):
 
     data = data[['protein_acc','protein_url']].to_numpy()
 
     fastadict = {}
     for i,url in enumerate(data):
+        if i<startindex: continue
+        if i==endindex: break
+
         newdict = parse_fasta_from_gcs(url[1])
         fastadict.update( {url[0]:newdict} )
+
         if i%1000==0: print(f" on element {i+1}")
 
-    with open(output_file,'w') as file:
+    with open(f"{output_filename_without_json}_{startindex}-{endindex}.json",'w') as file:
         json.dump(fastadict,file)
     
     return fastadict
