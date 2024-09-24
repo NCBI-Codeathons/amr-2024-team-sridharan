@@ -29,7 +29,9 @@ def generate_embeddings(
     sequence_representations = []
     for i, (_, seq) in enumerate(sequences):
         sequence_representations.append(token_representations[i, 1 : len(seq) + 1].mean(0))
-    del model, batch_tokens
+    
+    model = None
+    batch_tokens = None
     torch.cuda.empty_cache()
     return [(batch_labels[i],rep.cpu().detach()) for i,rep in enumerate(sequence_representations)] # Embedding dim is 1280
 
