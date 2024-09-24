@@ -26,4 +26,3 @@
    - Set up group permissions for future file creation in the virtual environment directory.
    - Output the command to activate the virtual environment.
 
-This reusable script simplifies the process and ensures that it can be repeated whenever needed, with minimal user intervention.
