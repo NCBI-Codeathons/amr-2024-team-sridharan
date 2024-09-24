@@ -1,5 +1,6 @@
 from torch_geometric.data import HeteroData
-import torch 
+import torch
+from processing_csv import create_protein_drug_class_tsv, create_edge_index_from_tsv, create_eye_matrix_from_tsv
 
 '''
 Inputs:
@@ -19,13 +20,20 @@ embedding_dim =1028
 num_drug_classes = 10
 
 protein_embeddings = torch.randn(num_proteins, embedding_dim)
-drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix
-edge_index = torch.tensor([[0, 1, 2, 3],  # Protein indices
-                           [0, 2, 1, 3]])
+#drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix, multihot encoding
 
 '''
 ===============Dummy Data=====================
 '''
+
+
+input_csv = ""
+output_tsv = ""
+
+create_protein_drug_class_tsv(input_csv, output_tsv)
+edge_index = create_edge_index_from_tsv(output_tsv)
+drug_class_embeddings,_ = create_eye_matrix_from_tsv(output_tsv)
+
 
 data = HeteroData()
 
