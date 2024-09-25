@@ -47,9 +47,8 @@ edge_label = train_data['protein', 'interacts_with', 'drug_class'].edge_label
 print(f"Training edge label index shape: {edge_label_index.shape}")
 print(f"Training edge labels shape: {edge_label.shape}")
 
-'''
-Link loader for training
-'''
+#Link loader for training
+
 train_loader = LinkNeighborLoader(
     data=train_data, 
     num_neighbors=[20, 10],  
@@ -58,4 +57,26 @@ train_loader = LinkNeighborLoader(
     edge_label=edge_label,  
     batch_size=128,  
     shuffle=True,
+)
+
+# Link loader for validation
+val_loader = LinkNeighborLoader(
+    data=val_data,
+    num_neighbors=[20, 10],
+    neg_sampling_ratio=2.0,
+    edge_label_index=(('protein', 'interacts_with', 'class'), val_data['protein', 'interacts_with', 'class'].edge_label_index),
+    edge_label=val_data['protein', 'interacts_with', 'class'].edge_label,
+    batch_size=128,
+    shuffle=False,
+)
+
+# Link loader for testing
+test_loader = LinkNeighborLoader(
+    data=test_data,
+    num_neighbors=[20, 10],
+    neg_sampling_ratio=2.0,
+    edge_label_index=(('protein', 'interacts_with', 'class'), test_data['protein', 'interacts_with', 'class'].edge_label_index),
+    edge_label=test_data['protein', 'interacts_with', 'class'].edge_label,
+    batch_size=128,
+    shuffle=False,
 )
