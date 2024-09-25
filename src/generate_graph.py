@@ -16,7 +16,7 @@ Edge Indices: [2, num_edges] #This we have to create a function that makes COO m
 ===============Dummy Data=====================
 '''
 num_proteins = 12
-embedding_dim =1028
+embedding_dim =480
 num_drug_classes = 10
 
 protein_embeddings = torch.randn(num_proteins, embedding_dim)
