@@ -1,7 +1,7 @@
 import os,pickle
 import numpy as np
 
-pickledir = "/temp/embeddings"
+pickledir = "temp/embeddings"
 
 files = os.listdir(pickledir)
 
