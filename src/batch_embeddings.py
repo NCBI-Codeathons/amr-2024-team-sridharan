@@ -19,7 +19,6 @@ embeddings = []
 # (Change this to something larger if you have the VRAM to spare)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t12_35M_UR50D")
-batch_converter = alphabet.get_batch_converter()
 model.eval()
 model.to(device)
 
@@ -50,21 +49,7 @@ while i<len(fastafolder):
     i += 1    
 
     try:
-        sequences = [(file,data)]
-        batch_labels, batch_strs, batch_tokens = batch_converter(sequences)
-        print(batch_labels)
-        print(batch_strs)
-        print(batch_tokens)
-        quit()
-        with torch.no_grad():
-            batch_tokens = batch_tokens.to(device)
-            results = model(batch_tokens, repr_layers=[12], return_contacts=True)
-        token_representations = results["representations"][12]
-
-        sequence_representations = []
-        embeddings += [(batch_labels[i],rep.cpu().detach()) for i,rep in enumerate(sequence_representations)]
-        for i, (_, seq) in enumerate(sequences):
-            sequence_representations.append(token_representations[i, 1 : len(seq) + 1].mean(0))
+        embeddings += generate_embeddings([(file,data)],model,alphabet)
     except KeyError:
         print(f"protein {file} had an unrecognized AA")
     # Some proteins have amino acids that the model doesn't recognize. In this case we warn the user and skip that protein
