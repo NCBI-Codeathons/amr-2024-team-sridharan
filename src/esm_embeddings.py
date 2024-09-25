@@ -20,8 +20,8 @@ def generate_embeddings(
     batch_labels, batch_strs, batch_tokens = batch_converter(sequences)
     with torch.no_grad():
         batch_tokens = batch_tokens.to(device)
-        results = model(batch_tokens, repr_layers=[33], return_contacts=True)
-    token_representations = results["representations"][33]
+        results = model(batch_tokens, repr_layers=[30], return_contacts=True)
+    token_representations = results["representations"][30]
 
     # Generating sequence representating via averaging token representations
     sequence_representations = []

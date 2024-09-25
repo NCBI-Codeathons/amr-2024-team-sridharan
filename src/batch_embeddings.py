@@ -10,7 +10,7 @@ batch_size = 100
 embeddings = []
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_650M_UR50D")
+model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t30_150M_UR50D")
 model.eval()
 model.to(device)
 
