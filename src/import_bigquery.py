@@ -1,3 +1,8 @@
+"""
+This is a support script to download the full dataset for local processing. 
+It's usually faster than querying the api all the time
+"""
+
 from google.cloud import bigquery
 import pandas as pd
 

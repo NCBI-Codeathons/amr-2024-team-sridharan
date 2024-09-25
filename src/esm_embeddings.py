@@ -12,6 +12,7 @@ def generate_embeddings(
         sequences, # list of tuples of the form ('header','sequence')
         model,
         alphabet,
+        embedding_layer=12 # The final layer of the embedding model
         device=device, # will automatically use CUDA if its available else will fall back on cpu
 ):
 
@@ -20,8 +21,8 @@ def generate_embeddings(
     batch_labels, batch_strs, batch_tokens = batch_converter(sequences)
     with torch.no_grad():
         batch_tokens = batch_tokens.to(device)
-        results = model(batch_tokens, repr_layers=[12], return_contacts=True)
-    token_representations = results["representations"][12]
+        results = model(batch_tokens, repr_layers=[embedding_layer], return_contacts=True)
+    token_representations = results["representations"][embedding_layer]
 
     # Generating sequence representating via averaging token representations
     sequence_representations = []
@@ -48,7 +49,6 @@ if __name__=="__main__":
     ("protein2", "KALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSGASRGIRLLQEE"),
     ("protein1", "MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG"),
     ("protein2", "KALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSGASRGIRLLQEE"),
-    
-    ]
+    ] # lots of duplicates to test the code
 
     print(generate_embeddings(data,'cuda')) 
