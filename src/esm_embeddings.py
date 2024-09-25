@@ -12,7 +12,7 @@ def generate_embeddings(
         sequences, # list of tuples of the form ('header','sequence')
         model,
         alphabet,
-        embedding_layer=12 # The final layer of the embedding model
+        embedding_layer=12, # The final layer of the embedding model
         device=device, # will automatically use CUDA if its available else will fall back on cpu
 ):
 
@@ -50,5 +50,8 @@ if __name__=="__main__":
     ("protein1", "MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG"),
     ("protein2", "KALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSGASRGIRLLQEE"),
     ] # lots of duplicates to test the code
-
-    print(generate_embeddings(data,'cuda')) 
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t12_35M_UR50D")
+    model.eval()
+    model.to(device)
+    print(generate_embeddings(data,model, alphabet,12,'cuda')) 
