@@ -16,9 +16,6 @@ Idenfity novel antibiotic resistances in organisms using graph representation le
 ![Graphical abstract](misc/Workflow_updated.drawio.png)
 
 ## Explanation of the workflow
-The step-by-step explanation of the workflow is as follows;
-
-- Data preprocessing
 
 The 'MicroBIGG-E' database was used to obtain AMR-related information, specifically focusing on the ESKAPE species. For each protein sequence, a FASTA-like structure is used, consisting of amino acids. These sequences serve as input for further steps.
 
