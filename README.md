@@ -13,7 +13,7 @@ Idenfity novel antibiotic resistances in organisms using graph representation le
 
 ## Approach (WIP)
 
-![Graphical abstract](misc/Workflow.png)
+![Graphical abstract](misc/Workflow.jpg)
 
 ## Explanation of the workflow
 The step-by-step explanation of the workflow is as follows;
