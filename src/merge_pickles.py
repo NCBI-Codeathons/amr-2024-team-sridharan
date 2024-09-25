@@ -10,8 +10,9 @@ for file in files:
 
     with open(os.path.join(pickledir,file),'rb') as handle:
         data += handle.read()
+    break
 
-print(data[0]);quit()
+print(data);quit()
 embeddings = [i[1] for i in data]
 accessions = [i[0] for i in data]
 
