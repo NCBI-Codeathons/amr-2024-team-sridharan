@@ -31,6 +31,8 @@ if len(last_embedding)>0:
         with open(os.path.join(embeddingsdir,filename),'rb') as handle:
             data = pickle.load(handle)
         previous += [i[0] for i in data]
+else:
+    previous=[]
 
 # main loop
 sequences = []
