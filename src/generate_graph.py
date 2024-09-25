@@ -11,7 +11,6 @@ Edge Indices: [2, num_edges] #This we have to create a function that makes COO m
 
 '''
 
-
 '''
 ===============Dummy Data=====================
 '''
@@ -22,7 +21,7 @@ num_drug_classes = 10
 #protein_embeddings = torch.randn(num_proteins, embedding_dim)
 #drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix, multihot encoding
 
-embedding_pkl = "/shared_venv/embeddings.pkl"
+embedding_pkl = "/shared_venv/embeddings/embeddings.pkl"
 with open(embedding_pkl, 'rb') as f:
     protein_embeddings = pkl.load(f)
     print(protein_embeddings.shape)
@@ -32,7 +31,7 @@ with open(embedding_pkl, 'rb') as f:
 '''
 
 
-input_csv = "/shared_venv/data_from_bigquery.csv"
+input_csv = "/shared_venv/data_from_bigquery.csv" #This is the csv file downlaoded from big query
 output_tsv = "hetero_protein_graph.tsv"
 
 
