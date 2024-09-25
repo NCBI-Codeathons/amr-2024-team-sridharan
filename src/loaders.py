@@ -1,10 +1,10 @@
 from torch_geometric.loader import LinkNeighborLoader
 import torch_geometric.transforms as T
 import pickle as pkl
-from generate_graph import pickle_path
 import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+pickle_path = "hetero_graph_data.pkl"
 
 # Loading the graph data
 with open(pickle_path, 'rb') as f:
