@@ -15,21 +15,30 @@ model.eval()
 model.to(device)
 
 last_embedding = os.listdir(embeddingsdir)
-if len(last_embedding)==0:
-    i=0
-else:
-    i = int(last_embedding[-1].split('.')[0])
-
+i=0
+if len(last_embedding)>0:
+    previous = []
+    for filename in last_embedding:
+        with open(os.path.join(embeddingsdir,filename),'rb') as handle:
+            data = pickle.load(handle)
+        previous += [i[0] for i in data]
 
 while i<len(fastafolder):
     file = fastafolder[i]
+
+    if file in previous:
+        i += 1
+        continue
 
     # Create a BytesIO buffer for the gzip file and extract the content
     with gzip.open(os.path.join(tempfolder,file),'rt') as handle:
         data = ''.join(handle.read().split('\n')[1:])
     i += 1    
 
-    embeddings += generate_embeddings([(file,data)],model,alphabet)
+    try:
+        embeddings += generate_embeddings([(file,data)],model,alphabet)
+    except KeyError:
+        print(f"protein {file} had an unrecognized AA")
 
     if i%(batch_size*100)==0:
         with open(f"temp/embeddings/{i}.pickle", 'wb') as handle:
