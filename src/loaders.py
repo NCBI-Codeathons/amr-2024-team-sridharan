@@ -8,7 +8,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Loading the graph data
 with open(pickle_path, 'rb') as f:
-    data = pkl.load(f).to(device)
+    data = pkl.load(f)
+    
+data = data.to(device)
 
 print(f"Node types: {data.node_types}")
 print(f"Edge types: {data.edge_types}")
