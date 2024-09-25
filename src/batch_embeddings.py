@@ -18,7 +18,7 @@ embeddings = []
 # Load in the embedding model 
 # (Change this to something larger if you have the VRAM to spare)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_350M_UR50D")
+model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t12_35M_UR50D")
 model.eval()
 model.to(device)
 
