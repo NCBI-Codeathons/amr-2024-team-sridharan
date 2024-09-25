@@ -35,7 +35,7 @@ else:
     previous=[]
 
 # main loop
-
+print(f"found {len(previous)} embeddings generated. proceesing...")
 while i<len(fastafolder):
     file = fastafolder[i]
 
