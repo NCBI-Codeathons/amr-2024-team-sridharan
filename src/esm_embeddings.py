@@ -51,5 +51,4 @@ if __name__=="__main__":
     
     ]
 
-    # with torch.amp.autocast(device):
     print(generate_embeddings(data,'cuda')) 
