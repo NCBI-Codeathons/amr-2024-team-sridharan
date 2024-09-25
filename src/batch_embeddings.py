@@ -11,7 +11,7 @@ from esm_embeddings import generate_embeddings
 tempfolder = "temp/fastas/"
 embeddingsdir = "temp/embeddings/"
 fastafolder = os.listdir(tempfolder)
-batch_size = 100
+batch_size = 10
 
 embeddings = []
 
@@ -33,6 +33,7 @@ if len(last_embedding)>0:
         previous += [i[0] for i in data]
 
 # main loop
+sequences = []
 while i<len(fastafolder):
     file = fastafolder[i]
 
@@ -44,12 +45,16 @@ while i<len(fastafolder):
     with gzip.open(os.path.join(tempfolder,file),'rt') as handle:
         data = ''.join(handle.read().split('\n')[1:])
     i += 1    
+    sequences.append( (file,data) )
 
+    if i%batch_size==0:
+        try:
+            embeddings += generate_embeddings(sequences,model,alphabet)
+        except KeyError:
+            print(f"protein {file} had an unrecognized AA")
+        sequences = []
     # Some proteins have amino acids that the model doesn't recognize. In this case we warn the user and skip that protein
-    try:
-        embeddings += generate_embeddings([(file,data)],model,alphabet)
-    except KeyError:
-        print(f"protein {file} had an unrecognized AA")
+    
 
     # Every 100 batches we dump the currently generated embeddings
     # This is more to prevent the script from eating all your RAM than anything else tbh
