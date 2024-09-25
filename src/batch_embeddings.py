@@ -18,7 +18,7 @@ embeddings = []
 # Load in the embedding model 
 # (Change this to something larger if you have the VRAM to spare)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t12_35M_UR50D")
+model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t33_350M_UR50D")
 model.eval()
 model.to(device)
 
@@ -35,7 +35,7 @@ else:
     previous=[]
 
 # main loop
-sequences = []
+
 while i<len(fastafolder):
     file = fastafolder[i]
 
@@ -47,14 +47,11 @@ while i<len(fastafolder):
     with gzip.open(os.path.join(tempfolder,file),'rt') as handle:
         data = ''.join(handle.read().split('\n')[1:])
     i += 1    
-    sequences.append( (file,data) )
 
-    if i%batch_size==0:
-        try:
-            embeddings += generate_embeddings(sequences,model,alphabet)
-        except KeyError:
-            print(f"protein {file} had an unrecognized AA")
-        sequences = []
+    try:
+        embeddings += generate_embeddings([(file,data)],model,alphabet)
+    except KeyError:
+        print(f"protein {file} had an unrecognized AA")
     # Some proteins have amino acids that the model doesn't recognize. In this case we warn the user and skip that protein
     
 
