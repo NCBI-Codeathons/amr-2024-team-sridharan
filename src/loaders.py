@@ -23,20 +23,20 @@ transform = T.RandomLinkSplit(
     num_test=0.1,
     is_undirected=True,
     neg_sampling_ratio=2.0, 
-    edge_types=('protein', 'interacts_with', 'drug_class'),
-    rev_edge_types=('drug_class', 'interacted_by', 'protein'),  # Reverse edges
+    edge_types=('protein', 'interacts_with', 'class'),
+    rev_edge_types=('class', 'interacted_by', 'protein'),  # Reverse edges
 )
 
 train_data, val_data, test_data = transform(data)
 
 print("Edge splitting completed!")
-print(f"Number of training edges: {train_data['protein', 'interacts_with', 'drug_class'].edge_label_index.shape[1]}")
-print(f"Number of validation edges: {val_data['protein', 'interacts_with', 'drug_class'].edge_label_index.shape[1]}")
-print(f"Number of test edges: {test_data['protein', 'interacts_with', 'drug_class'].edge_label_index.shape[1]}")
+print(f"Number of training edges: {train_data['protein', 'interacts_with', 'class'].edge_label_index.shape[1]}")
+print(f"Number of validation edges: {val_data['protein', 'interacts_with', 'class'].edge_label_index.shape[1]}")
+print(f"Number of test edges: {test_data['protein', 'interacts_with', 'class'].edge_label_index.shape[1]}")
 
 # Define seed edges for training and move to device
-edge_label_index = train_data['protein', 'interacts_with', 'drug_class'].edge_label_index.to(device)
-edge_label = train_data['protein', 'interacts_with', 'drug_class'].edge_label.to(device)
+edge_label_index = train_data['protein', 'interacts_with', 'class'].edge_label_index.to(device)
+edge_label = train_data['protein', 'interacts_with', 'class'].edge_label.to(device)
 print(f"Training edge label index shape: {edge_label_index.shape}")
 print(f"Training edge labels shape: {edge_label.shape}")
 
@@ -45,7 +45,7 @@ train_loader = LinkNeighborLoader(
     data=train_data, 
     num_neighbors=[20, 10],  
     neg_sampling_ratio=2.0,  
-    edge_label_index=(('protein', 'interacts_with', 'drug_class'), edge_label_index),
+    edge_label_index=(('protein', 'interacts_with', 'class'), edge_label_index),
     edge_label=edge_label,  
     batch_size=128,  
     shuffle=True,
