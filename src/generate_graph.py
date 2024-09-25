@@ -1,7 +1,7 @@
 from torch_geometric.data import HeteroData
 import torch
 from processing_csv import create_protein_drug_class_tsv, create_edge_index_from_tsv, create_eye_matrix_from_tsv
-
+import pickle as pkl
 '''
 Inputs:
 
@@ -43,6 +43,17 @@ data['class'].x = drug_class_embeddings  # Shape [num_drug_classes, embedding_di
 
 data['protein', 'interacts_with', 'class'].edge_index = edge_index  # Shape [2, num_edges]
 
+
+'''
+pickling the graph data
+'''
+
+pickle_path = "hetero_graph_data.pkl"
+
+with open(pickle_path, 'wb') as f:
+    pkl.dump(data, f)
+
+print(f'HeteroData object successfully saved to {pickle_path}')
 
 print(data['protein'].x)
 print(data['class'].x)
