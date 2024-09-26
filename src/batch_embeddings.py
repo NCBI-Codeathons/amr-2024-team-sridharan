@@ -50,7 +50,7 @@ while i<len(fastafolder):
 
     try:
         temp = generate_embeddings([(file,data)],model,alphabet)
-        embeddings += temp
+        embeddings.append( temp )
         print(temp)
     except KeyError:
         print(f"protein {file} had an unrecognized AA")
