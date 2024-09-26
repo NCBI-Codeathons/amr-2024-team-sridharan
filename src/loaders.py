@@ -4,7 +4,7 @@ import pickle as pkl
 import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-pickle_path = "shared_venv/hetero_graph_data.pkl"
+pickle_path = "/shared_venv/hetero_graph_data.pkl"
 
 # Loading the graph data
 with open(pickle_path, 'rb') as f:
