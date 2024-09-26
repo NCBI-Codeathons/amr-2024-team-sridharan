@@ -1,38 +1,34 @@
 import torch
 import torch.nn.functional as F
-from torch_geometric.nn import SAGEConv, GATConv, to_hetero
+from torch_geometric.nn import SAGEConv, GCNConv, GATConv, to_hetero
 from torch.nn import Linear
 import pickle as pkl
 from generate_graph import pickle_path
 
-
-'''
-loading the graph data
-'''
-
+# Load the graph data
 with open(pickle_path, 'rb') as f:
     data = pkl.load(f)
 
 
 class HeteroGraphModel(torch.nn.Module):
-    def __init__(self, hidden_channels, out_channels, num_heads=4):
+    def __init__(self, hidden_channels, out_channels):
         super().__init__()
 
-        # GraphSAGE for the first layer
-        self.conv1 = SAGEConv((-1, -1), hidden_channels)
+        # First layer: SAGEConv for neighborhood aggregation
+        self.conv1 = SAGEConv((-1, -1), hidden_channels)  # Use tuple (-1, -1) for SAGEConv
+        
+        # Second layer: GATConv, explicitly set add_self_loops=False
+        self.conv2 = GATConv((-1, -1), hidden_channels, heads=4, concat=False, add_self_loops=False)
 
-        # GATConv for the second layer, with add_self_loops set to False
-        self.conv2 = GATConv((-1, -1), hidden_channels, heads=num_heads, concat=False, add_self_loops=False)
-
-        # Final linear layer
+        # Linear layer for final embeddings
         self.lin = Linear(hidden_channels, out_channels)
 
     def forward(self, x, edge_index):
-        # First layer: GraphSAGE
+        # Apply first SAGEConv layer
         x = self.conv1(x, edge_index)
         x = F.relu(x)
         
-        # Second layer: GATConv
+        # Apply second GATConv layer
         x = self.conv2(x, edge_index)
         x = F.relu(x)
         
@@ -40,29 +36,31 @@ class HeteroGraphModel(torch.nn.Module):
         x = self.lin(x)
         return x
 
+
 class LinkPredictor(torch.nn.Module):
     def __init__(self, in_channels):
         super().__init__()
-        self.lin = torch.nn.Linear(in_channels, 1)
+        # Linear layer for predicting the existence of edges
+        self.lin = torch.nn.Linear(2 * in_channels, 1)  # Concatenate node embeddings
 
-    def forward(self, z_protein, z_class, edge_label_index):
-        # Extract the embeddings for source and target nodes
-        src_emb = z_protein[edge_label_index[0]]  
-        tgt_emb = z_class[edge_label_index[1]]    
+    def forward(self, z_protein, z_drug_class, edge_label_index):
+        # Concatenate the source and target node embeddings
+        src_emb = z_protein[edge_label_index[0]]  # Source node embeddings (protein)
+        tgt_emb = z_drug_class[edge_label_index[1]]  # Target node embeddings (drug class)
+        
+        # Concatenate the source and target embeddings
+        edge_features = torch.cat([src_emb, tgt_emb], dim=-1)
 
-        # Element-wise product of source and target node embeddings
-        edge_features = src_emb * tgt_emb
-
-        # Predict edge probability using a sigmoid layer
+        # Apply linear layer to predict edge existence
         return torch.sigmoid(self.lin(edge_features)).squeeze()
 
 class HeteroLinkPredictionModel(torch.nn.Module):
-    def __init__(self, hidden_channels, out_channels, num_heads=4):
+    def __init__(self, hidden_channels, out_channels):
         super().__init__()
-        # Initialize the heterogeneous graph model (GraphSAGE + GATConv)
-        self.gnn = HeteroGraphModel(hidden_channels, out_channels, num_heads)
+        # Initialize the heterogeneous graph model (GCN)
+        self.gnn = HeteroGraphModel(hidden_channels, out_channels)
 
-        # Convert the homogeneous GNN into a heterogeneous GNN
+        # Convert to heterogeneous model for multiple node types
         self.gnn = to_hetero(self.gnn, metadata=data.metadata())
 
         # Initialize the link predictor
@@ -74,7 +72,7 @@ class HeteroLinkPredictionModel(torch.nn.Module):
 
         # Use the link predictor to predict the existence of edges
         pred = self.link_predictor(
-            z_dict['protein'], z_dict['class'],
-            data['protein', 'interacts_with', 'drug_class'].edge_label_index
+            z_dict['protein'], z_dict['class'],  # Use embeddings for 'protein' and 'class'
+            data['protein', 'interacts_with', 'class'].edge_label_index
         )
         return pred
