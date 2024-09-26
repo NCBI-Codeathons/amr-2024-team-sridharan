@@ -1,6 +1,6 @@
 import polars as pl
 
-alldata = "data_from_bigquery.csv"
+alldata = "/shared_venv/data_from_bigquery.csv"
 values = "temp/all_embeddings.txt"
 
 data = pl.read_csv(alldata)
