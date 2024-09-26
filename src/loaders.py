@@ -28,11 +28,12 @@ transform = T.RandomLinkSplit(
 )
 
 train_data, val_data, test_data = transform(data)
+#print(train_data)
 
 print("Edge splitting completed!")
-print(f"Number of training edges: {train_data['protein', 'interacts_with', 'class'].edge_label_index.shape[1]}")
-print(f"Number of validation edges: {val_data['protein', 'interacts_with', 'class'].edge_label_index.shape[1]}")
-print(f"Number of test edges: {test_data['protein', 'interacts_with', 'class'].edge_label_index.shape[1]}")
+print(f"Number of training edges: {train_data['protein', 'interacts_with', 'class'].edge_label_index.shape}")
+print(f"Number of validation edges: {val_data['protein', 'interacts_with', 'class'].edge_label_index.shape}")
+print(f"Number of test edges: {test_data['protein', 'interacts_with', 'class'].edge_label_index.shape}")
 
 # Define seed edges for training and move to device
 edge_label_index = train_data['protein', 'interacts_with', 'class'].edge_label_index.to(device)
