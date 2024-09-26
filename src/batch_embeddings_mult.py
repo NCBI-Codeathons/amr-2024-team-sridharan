@@ -37,7 +37,7 @@ def process_fasta(file):
     
     try:
         temp = generate_embeddings([(file, data)], model, alphabet)
-        torch.cuda.empty_cache()
+
         return temp
     except KeyError:
         print(f"protein {file} had an unrecognized AA")

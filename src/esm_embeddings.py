@@ -22,14 +22,14 @@ def generate_embeddings(
     with torch.no_grad():
         batch_tokens = batch_tokens.to(device)
         results = model(batch_tokens, repr_layers=[embedding_layer], return_contacts=True)
-    token_representations = results["representations"][embedding_layer]
+    token_representations = results["representations"][embedding_layer].cpu().detach()
 
     # Generating sequence representating via averaging token representations
     sequence_representations = []
     for i, (_, seq) in enumerate(sequences):
         sequence_representations.append(token_representations[i, 1 : len(seq) + 1].mean(0))
     
-    del batch_tokens, token_representations
+    del batch_tokens, token_representations, results
     torch.cuda.empty_cache()
     return sequence_representations # Embedding dim is 1280
 
