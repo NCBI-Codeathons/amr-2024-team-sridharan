@@ -138,12 +138,12 @@ for epoch in range(1, epochs + 1):
     print(f'Epoch {epoch}/{epochs}')
     
     # Train
-    train_loss = train(model, train_loader, optimizer).cpu().detach()
+    train_loss = train(model, train_loader, optimizer)
     train_losses.append(train_loss)
     print(f'Train Loss: {train_loss:.4f}')
     
     # Validate
-    val_loss = validate(model, val_loader).cpu().detach()
+    val_loss = validate(model, val_loader)
     val_losses.append(val_loss)
     print(f'Validation Loss: {val_loss:.4f}')
 
