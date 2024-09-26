@@ -1,7 +1,6 @@
 import torch
 import torch.nn.functional as F
 from tqdm import tqdm
-from torch_geometric.loader import LinkNeighborLoader
 from torch.optim import Adam
 from model import HeteroLinkPredictionModel
 from loaders import train_loader, val_loader, test_loader
