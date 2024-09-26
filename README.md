@@ -37,6 +37,9 @@ transformers
 google-cloud-bigquery
 google-cloud-storage
 ```
+## Project outcomes
+
+The successful implementation  of GrAMR would allow for users to determine possible AMR properties of novel/unkown proteins where only sequence data is available. Furthermore, with relatively minor tweaking it wouldbe possible to determine the effects of certain protein sequence mutations on the likelihood of creating AMR effects in a protein by analyzing model weights and activations. 
 
 ## Results
 
