@@ -21,7 +21,7 @@ num_drug_classes = 10
 #protein_embeddings = torch.randn(num_proteins, embedding_dim) #(N, 280)
 #drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix, multihot encoding
 
-embedding_pkl = "shared_venv/all_embeddings.pickle"
+embedding_pkl = "/shared_venv/all_embeddings.pickle"
 with open(embedding_pkl, 'rb') as f:
     protein_embeddings = pkl.load(f)
     protein_embeddings = torch.from_numpy(protein_embeddings)
@@ -31,8 +31,8 @@ with open(embedding_pkl, 'rb') as f:
 ===============Dummy Data=====================
 '''
 
-input_csv = "shared_venv/filtered_data.csv" #This is the csv file downlaoded from big query
-output_tsv = "shared_venv/hetero_protein_graph.tsv"
+input_csv = "/shared_venv/filtered_data.csv" #This is the csv file downlaoded from big query
+output_tsv = "/shared_venv/hetero_protein_graph.tsv"
 
 create_protein_drug_class_tsv(input_csv, output_tsv)
 edge_index = create_edge_index_from_tsv(output_tsv)
@@ -60,7 +60,7 @@ data['drug_class', 'interacted_by', 'protein'].edge_index = reverse_edge_index
 pickling the graph data
 '''
 
-pickle_path = "shared_venv/hetero_graph_data.pkl"
+pickle_path = "/shared_venv/hetero_graph_data.pkl"
 
 with open(pickle_path, 'wb') as f:
     pkl.dump(data, f)
