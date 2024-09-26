@@ -1,15 +1,15 @@
 # GrAMR 
 
 List of participants and affiliations:
-- Ganeshiny Sridharan, University of Colombo  (Team Leader)
-- Janith Weeraman, University of Calgary (Tech Lead)
+- Ganeshiny Sridharan, University of Colombo  **(Team Lead)**
+- Janith Weeraman, University of Calgary **(Tech Lead)**
 - Nimna Alupotha Gamage, University of Colombo
 - Nuwan Medawaththa, University of Colombo
 - Ruwanthika Premarathne, University of Colombo
 
 ## Project Goals
 
-Idenfity novel antibiotic resistances in organisms using graph representation learning
+This project aims to idenfity novel antibiotic resistances in ESKAPE organisms using graph representation learning
 
 ## Workflow
 
