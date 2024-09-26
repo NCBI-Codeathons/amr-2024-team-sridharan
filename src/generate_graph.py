@@ -21,7 +21,7 @@ num_drug_classes = 10
 #protein_embeddings = torch.randn(num_proteins, embedding_dim) #(N, 280)
 #drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix, multihot encoding
 
-embedding_pkl = "temp/all_embeddings.pickle"
+embedding_pkl = "shared_venv/all_embeddings.pickle"
 with open(embedding_pkl, 'rb') as f:
     protein_embeddings = pkl.load(f)
     protein_embeddings = torch.from_numpy(protein_embeddings)
