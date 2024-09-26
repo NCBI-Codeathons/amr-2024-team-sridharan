@@ -49,7 +49,9 @@ while i<len(fastafolder):
     i += 1    
 
     try:
-        embeddings += generate_embeddings([(file,data)],model,alphabet)
+        temp = generate_embeddings([(file,data)],model,alphabet)
+        embeddings += temp
+        print(temp)
     except KeyError:
         print(f"protein {file} had an unrecognized AA")
     # Some proteins have amino acids that the model doesn't recognize. In this case we warn the user and skip that protein
