@@ -17,9 +17,9 @@ Idenfity novel antibiotic resistances in organisms using graph representation le
 
 ## Approach
 
-The study focsed on identifying AMR-related novel resistances in ESKAPE species. Initially the MicroBIGG-E database was queried with the above filters to get the protein ids and AMR class for each of the proteins. The protein sequences were then used to generate 420 dimensional sequence embeddings using the ESM-2 (35M) protein embedding model. T
+The study focsed on identifying AMR-related novel resistances in ESKAPE species. Initially the MicroBIGG-E database was queried with the above filters to get the protein ids and AMR class for each of the proteins. The protein sequences were then used to generate 420 dimensional sequence embeddings using the ESM-2 (35M) protein embedding model. 
 
-We then construct a bi-partite graph is constructed based on the drug-protein interactions in the database, where the nodes in the graph are of type 'protein' or 'drug class' and edges indicate the presence of AMR activity. Then, the sequence embeddings constructed in the previous step are added to the graph as node features.
+We then construct a bi-partite graph is constructed based on the drug-protein interactions in the database, where the nodes in the graph are of type 'protein' or 'drug class' and edges indicate the presence of AMR activity. Then, the sequence embeddings constructed in the previous step are added to the graph as node features, and one-hot encoded class labels are used as node features for the drug nodes. 
 
 After constructing the sequence-informed drug-target graph, it is used as an input to a Graph Neural Network, which will be trained to predict novel AMR effects. This training will be carried out via a link prediction objective. 
 
