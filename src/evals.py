@@ -40,7 +40,9 @@ def evaluate(model, loader):
             # Store predictions and ground truth
             all_preds.append(torch.sigmoid(pred).cpu().numpy())
             all_labels.append(ground_truth.cpu().numpy())
-
+            
+            print(f"Shape of y_pred: {all_preds.shape}")
+            print(f"Shape of y_true:{all_labels.shape}")
             pbar.update(1)
 
     pbar.close()
