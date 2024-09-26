@@ -21,22 +21,23 @@ num_drug_classes = 10
 #protein_embeddings = torch.randn(num_proteins, embedding_dim) #(N, 280)
 #drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix, multihot encoding
 
-'''embedding_pkl = "/shared_venv/embeddings/embeddings.pkl"
+embedding_pkl = "/shared_venv/all_embeddings.pickle"
 with open(embedding_pkl, 'rb') as f:
     protein_embeddings = pkl.load(f)
-    print(protein_embeddings.shape)'''
+    protein_embeddings = torch.from_numpy(protein_embeddings)
+    print(f"Loaded the protein embeddings of shape : {protein_embeddings.shape} \n")
 
 '''
 ===============Dummy Data=====================
 '''
 
-input_csv = "/shared_venv/data_from_bigquery.csv" #This is the csv file downlaoded from big query
+input_csv = "/shared_venv/filtered_data.csv" #This is the csv file downlaoded from big query
 output_tsv = "hetero_protein_graph.tsv"
 
 create_protein_drug_class_tsv(input_csv, output_tsv)
 edge_index = create_edge_index_from_tsv(output_tsv)
 
-protein_embeddings = torch.randn(edge_index.shape[1], 280) # Creating dummy embeddings detelt this later(N, 280)
+#protein_embeddings = torch.randn(edge_index.shape[1], 280) # Creating dummy embeddings detelt this later(N, 280)
 
 drug_class_embeddings,_ = create_eye_matrix_from_tsv(output_tsv)
 
