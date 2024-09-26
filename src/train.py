@@ -146,7 +146,7 @@ def run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.0
 
 
 if __name__ == "__main__":
-    model = HeteroLinkPredictionModel(hidden_channels, out_channels, num_heads)
+    model = HeteroLinkPredictionModel(hidden_channels, out_channels)
     model = model.to(device)
 
     run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001)
