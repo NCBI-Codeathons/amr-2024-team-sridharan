@@ -125,8 +125,8 @@ def test(model, loader):
     return total_correct / total_examples
 
 
-def run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001):
-    optimizer = Adam(model.parameters(), lr=lr)
+def run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001, optimizer=None):
+    optimizer = Adam(model.parameters(), lr=lr) if optimizer is None else optimizer
 
     for epoch in range(1, epochs + 1):
         print(f'Epoch {epoch}/{epochs}')
@@ -143,9 +143,17 @@ def run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.0
     test_acc = test(model, test_loader)
     print(f'Test Accuracy: {test_acc * 100:.2f}%')
 
+    return model,optimizer
+
 
 if __name__ == "__main__":
     model = HeteroLinkPredictionModel(hidden_channels, out_channels)
     model = model.to(device)
 
-    run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001)
+    model, optimizer = run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001)
+
+    torch.save({
+        'model_state_dict': model.state_dict,
+        'optimizer_state_dict' : optimizer.state_dict,
+        
+    })
