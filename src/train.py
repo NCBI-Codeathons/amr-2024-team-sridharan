@@ -125,35 +125,36 @@ def test(model, loader):
     return total_correct / total_examples
 
 
-def run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001, optimizer=None):
-    optimizer = Adam(model.parameters(), lr=lr) if optimizer is None else optimizer
+epochs=10
+lr=0.001
 
-    for epoch in range(1, epochs + 1):
-        print(f'Epoch {epoch}/{epochs}')
-        
-        # Train
-        train_loss = train(model, train_loader, optimizer)
-        print(f'Train Loss: {train_loss:.4f}')
-        
-        # Validate
-        val_loss = validate(model, val_loader)
-        print(f'Validation Loss: {val_loss:.4f}')
+model = HeteroLinkPredictionModel(hidden_channels, out_channels)
+model = model.to(device)
 
-    # Test
-    test_acc = test(model, test_loader)
-    print(f'Test Accuracy: {test_acc * 100:.2f}%')
+optimizer = Adam(model.parameters(), lr=lr)
 
-    return model,optimizer
+train_losses, val_losses = [], []
+for epoch in range(1, epochs + 1):
+    print(f'Epoch {epoch}/{epochs}')
+    
+    # Train
+    train_loss = train(model, train_loader, optimizer).cpu().detach()
+    train_losses.append(train_loss)
+    print(f'Train Loss: {train_loss:.4f}')
+    
+    # Validate
+    val_loss = validate(model, val_loader).cpu().detach()
+    val_losses.append(val_loss)
+    print(f'Validation Loss: {val_loss:.4f}')
 
+# Test
+test_acc = test(model, test_loader)
+print(f'Test Accuracy: {test_acc * 100:.2f}%')
 
-if __name__ == "__main__":
-    model = HeteroLinkPredictionModel(hidden_channels, out_channels)
-    model = model.to(device)
-
-    model, optimizer = run_training(train_loader, val_loader, test_loader, model, epochs=10, lr=0.001)
-
-    torch.save({
+torch.save({
         'model_state_dict': model.state_dict,
         'optimizer_state_dict' : optimizer.state_dict,
-        
+        'train_losses' : train_losses,
+        'val_losses' : val_losses
     })
+
