@@ -10,11 +10,11 @@ for file in files:
     print(f"reading {file}")
     with open(os.path.join(pickledir,file),'rb') as handle:
         data += handle.read()
-    break
 
 
-embeddings = [i[1] for i in data]
-accessions = [i[0] for i in data]
+
+embeddings = [i[0][1] for i in data]
+accessions = [i[0][0] for i in data]
 
 embeddings = np.array(embeddings)
 
