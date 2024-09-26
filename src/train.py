@@ -152,8 +152,8 @@ test_acc = test(model, test_loader)
 print(f'Test Accuracy: {test_acc * 100:.2f}%')
 
 torch.save({
-        'model_state_dict': model.state_dict,
-        'optimizer_state_dict' : optimizer.state_dict,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict' : optimizer.state_dict(),
         'train_losses' : train_losses,
         'val_losses' : val_losses
     }, f'model_checkpoint_{epoch}_{lr}.pth')
