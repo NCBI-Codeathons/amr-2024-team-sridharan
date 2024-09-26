@@ -156,5 +156,4 @@ torch.save({
         'optimizer_state_dict' : optimizer.state_dict,
         'train_losses' : train_losses,
         'val_losses' : val_losses
-    })
-
+    }, f'model_checkpoint_{epoch}_{lr}.pth')
