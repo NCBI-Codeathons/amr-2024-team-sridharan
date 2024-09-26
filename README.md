@@ -11,23 +11,27 @@ List of participants and affiliations:
 
 Idenfity novel antibiotic resistances in organisms using graph representation learning
 
-## Approach (WIP)
+## Workflow
 
 ![Graphical abstract](misc/Workflow_updated.drawio.png)
 
-## Explanation of the workflow
+## Approach
 
-The 'MicroBIGG-E' database was used to obtain AMR-related information, specifically focusing on the ESKAPE species. For each protein sequence, an embedding model (esm2 35M in this case) is used to produces embeddings representing each sequence in a high-dimensional space. This will also integrate positional information learned through the embedding model's pre-training process. These high-dimensional embeddings are used as node-features in the drug-target graph to inform the future predictions.
+The study focsed on identifying AMR-related novel resistances in ESKAPE species. Initially the MicroBIGG-E database was queried with the above filters to get the protein ids and AMR class for each of the proteins. The protein sequences were then used to generate 420 dimensional sequence embeddings using the ESM-2 (35M) protein embedding model. T
 
-The protein sequences are labeled according to different AMR classes. These labels are then label encoded, converting the categorical labels into numerical format for use in machine learning models. The AMR classes are represented as a multihot label vector. A bi-partite graph is constructed where one set of nodes represents proteins and the other set represents drug classes. Edges between protein nodes and drug class nodes represent interactions. 
+We then construct a bi-partite graph is constructed based on the drug-protein interactions in the database, where the nodes in the graph are of type 'protein' or 'drug class' and edges indicate the presence of AMR activity. Then, the sequence embeddings constructed in the previous step are added to the graph as node features.
 
-After the bi-partite graph is constructed, the edge prediction task is handled by several layers. After the graph processing, a classifier is used to assign the AMR class labels to the protein sequences based on the predictions. This model attempts to predict the likelihood that a protein belongs to a particular AMR class. In the final step, new links (edges) are predicted between proteins and drug classes, indicating whether a protein is resistant to a specific drug class. These predicted edges form the basis of understanding the AMR protein-drug interactions.
+After constructing the sequence-informed drug-target graph, it is used as an input to a Graph Neural Network, which will be trained to predict novel AMR effects. This training will be carried out via a link prediction objective. 
+
 
 ## Results
 
 ## Future Work
 
-- Switching out the current embedding model for a larger and more performant model
+- Incorporating a larger subset of the proteins 
+- Switching out the current embedding model for a larger variant of the ESM-2 model family
+- Fine-tuning the GNN architecture
+
 
 ## NCBI Codeathon Disclaimer
 This software was created as part of an NCBI codeathon, a hackathon-style event focused on rapid innovation. While we encourage you to explore and adapt this code, please be aware that NCBI does not provide ongoing support for it.
