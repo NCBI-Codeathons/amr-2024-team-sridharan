@@ -1,4 +1,4 @@
-<p align="center"># GrAMR </p>
+# GrAMR 
 
 List of participants and affiliations:
 - Ganeshiny Sridharan, University of Colombo  (Team Leader)
