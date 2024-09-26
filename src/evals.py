@@ -75,7 +75,7 @@ def plot_metrics(metrics, labels, metric_name="AUPR"):
 
 if __name__ == "__main__":
     # Load the trained model
-    model_path = 'model_checkpoint_10_0.001.pth'
+    model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
     model = load_model(model_path, hidden_channels, out_channels)
 
     # Evaluate the model on the test set
