@@ -1,7 +1,7 @@
 import polars as pl
 
 alldata = "/shared_venv/data_from_bigquery.csv"
-embeddings_txt = "temp/all_embeddings.txt"
+embeddings_txt = "temp/all_accessions.txt"
 
 with open(embeddings_txt,'r') as file:
     values = file.readlines()
