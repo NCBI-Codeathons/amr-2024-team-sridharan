@@ -56,4 +56,7 @@ for i in range(startindex,endindex):
         with open(f"temp/embeddings/{i}.pickle", 'wb') as handle:
             pickle.dump(embeddings,handle)
         embeddings = []
+
+with open(f"temp/embeddings/{i}.pickle", 'wb') as handle:
+    pickle.dump(embeddings,handle)
     
