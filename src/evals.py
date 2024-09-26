@@ -82,8 +82,8 @@ if __name__ == "__main__":
 
     # Evaluate the model on the test set
     y_preds, y_true = evaluate(model, test_loader)
-    print(f"Shape of y_pred: {y_preds.shape}")
-    print(f"Shape of y_true:{y_true.shape}")
+    print(f"Shape of y_pred: {y_preds.shape()}")
+    print(f"Shape of y_true:{y_true.shape()}")
 
     # Initialize lists to store AUPR and Fmax for each drug class
     auprs, fmax_scores = [], []
