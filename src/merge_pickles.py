@@ -14,7 +14,7 @@ for file in files:
 
 
 embeddings = [i[0][1] for i in data]
-accessions = [i[0][0] for i in data]
+accessions = [i[0][0][:-6] for i in data]
 
 embeddings = np.array(embeddings)
 
