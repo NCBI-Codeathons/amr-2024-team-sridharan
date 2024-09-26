@@ -49,6 +49,11 @@ data['class'].x = drug_class_embeddings  # Shape [num_drug_classes, embedding_di
 
 data['protein', 'interacts_with', 'class'].edge_index = edge_index  # Shape [2, num_edges]
 
+# Add reverse edges manually by swapping the source and target indices
+reverse_edge_index = torch.stack([edge_index[1], edge_index[0]], dim=0)
+
+# Adding the reverse edge type to the HeteroData object
+data['class', 'interacted_by', 'protein'].edge_index = reverse_edge_index
 
 '''
 pickling the graph data
