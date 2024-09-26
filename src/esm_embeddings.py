@@ -27,7 +27,7 @@ def generate_embeddings(
     # Generating sequence representating via averaging token representations
     sequence_representations = []
     for i, (_, seq) in enumerate(sequences):
-        sequence_representations.append(token_representations[i, 1 : len(seq) + 1].mean(0))
+        sequence_representations.append((batch_labels[i],token_representations[i, 1 : len(seq) + 1].mean(0)))
     
     del batch_tokens, token_representations, results
     torch.cuda.empty_cache()

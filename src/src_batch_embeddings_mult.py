@@ -36,7 +36,7 @@ else:
 
 # main loop
 print(f"found {len(previous)} embeddings generated. proceesing...")
-while i<len(fastafolder):
+while i>-1:
     file = fastafolder[i]
 
     if file in previous:
