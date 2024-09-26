@@ -6,3 +6,5 @@ google-cloud-storage
 biopython 
 networkx
 transformers
+seaborn
+sklearn
