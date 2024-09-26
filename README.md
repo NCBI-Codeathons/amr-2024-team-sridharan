@@ -24,15 +24,19 @@ We then construct a bi-partite graph is constructed based on the drug-protein in
 After constructing the sequence-informed drug-target graph, it is used as an input to a Graph Neural Network, which will be trained to predict novel AMR effects. This training will be carried out via a link prediction objective. 
 
 ## Required libraries
+```
 pytorch
-pytorch-geometric
+pytorch-geometric # with optional dependancies 
 polars
 networkx
 transformers
+```
 
 **Optional: only used when pulling data from google cloud**
+```
 google-cloud-bigquery
 google-cloud-storage
+```
 
 ## Results
 
