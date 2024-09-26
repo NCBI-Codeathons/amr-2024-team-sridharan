@@ -27,6 +27,8 @@ After constructing the sequence-informed drug-target graph, it is used as an inp
 pytorch
 pytorch-geometric
 polars
+networkx
+transformers
 
 ## Results
 

@@ -1,1 +1,6 @@
 virenv/
+src/__pycache__
+temp
+all_embeddings.pickle
+data_from_bigquery.csv
+filtered_data.csv
