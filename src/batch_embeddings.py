@@ -21,7 +21,7 @@ parser.add_argument('-e', '--end', type=int, default=1000, help='End index (defa
 args = parser.parse_args()
 
 startindex = int(args.start)
-endindex = int(args.end)
+endindex = int(args.end) if int(args.end) < len(fastafolder) else len(fastafolder)
 
 # Load in the embedding model 
 # (Change this to something larger if you have the VRAM to spare)
