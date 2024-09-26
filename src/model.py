@@ -72,7 +72,7 @@ class HeteroLinkPredictionModel(torch.nn.Module):
 
         # Use the link predictor to predict the existence of edges
         pred = self.link_predictor(
-            z_dict['protein'], z_dict['class'],  # Use embeddings for 'protein' and 'class'
-            data['protein', 'interacts_with', 'class'].edge_label_index
+            z_dict['protein'], z_dict['drug_class'],  # Use embeddings for 'protein' and 'class'
+            data['protein', 'interacts_with', 'drug_class'].edge_label_index
         )
         return pred
