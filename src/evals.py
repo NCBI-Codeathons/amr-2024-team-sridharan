@@ -35,14 +35,15 @@ def evaluate(model, loader):
 
             # Forward pass
             pred = model(batch)
+            print('pred: ',pred)
             ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
 
             # Store predictions and ground truth
             all_preds.append(torch.sigmoid(pred).cpu().numpy())
             all_labels.append(ground_truth.cpu().numpy())
             
-            print(f"Shape of y_pred: {all_preds.shape()}")
-            print(f"Shape of y_true:{all_labels.shape()}")
+            #print(f"Shape of y_pred: {all_preds.shape()}")
+            #print(f"Shape of y_true:{all_labels.shape()}")
             pbar.update(1)
 
     pbar.close()
