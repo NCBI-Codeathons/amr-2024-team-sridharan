@@ -1,8 +1,8 @@
-# GrAMR (WIP)
+# GrAMR 
 
 List of participants and affiliations:
 - Ganeshiny Sridharan, University of Colombo  (Team Leader)
-- Janith Weeraman, University of Calgary 
+- Janith Weeraman, University of Calgary (Tech Lead)
 - Nimna Alupotha Gamage, University of Colombo
 - Nuwan Medawaththa, University of Colombo
 - Ruwanthika Premarathne, University of Colombo
@@ -25,6 +25,7 @@ After constructing the sequence-informed drug-target graph, it is used as an inp
 
 
 ## Results
+
 
 ## Future Work
 
