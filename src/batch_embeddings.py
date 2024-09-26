@@ -5,7 +5,7 @@ It can also check to see if there are any alrady generated embedding pickles in 
 
 """
 
-import torch,os, gzip,pickle
+import torch,os, gzip,pickle, argparse
 from esm_embeddings import generate_embeddings
 
 tempfolder = "temp/fastas/"
@@ -14,6 +14,14 @@ fastafolder = os.listdir(tempfolder)
 batch_size = 5
 
 embeddings = []
+# Parsing command line arguments
+parser = argparse.ArgumentParser(description='Get start and end indices')
+parser.add_argument('-s', '--start', type=int, default=0, help='Start index (default: 0)')
+parser.add_argument('-e', '--end', type=int, default=1000, help='End index (default: 1000)')
+args = parser.parse_args()
+
+startindex = int(args.start)
+endindex = int(args.end)
 
 # Load in the embedding model 
 # (Change this to something larger if you have the VRAM to spare)
@@ -22,26 +30,11 @@ model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t12_35M_UR50
 model.eval()
 model.to(device)
 
-# Here we build a list of all the previously processed files from the pickles in embeddingdir
-last_embedding = os.listdir(embeddingsdir)
-i=0
-if len(last_embedding)>0:
-    previous = []
-    for filename in last_embedding:
-        with open(os.path.join(embeddingsdir,filename),'rb') as handle:
-            data = pickle.load(handle)
-        previous += [i[0] for i in data]
-else:
-    previous=[]
+
 
 # main loop
-print(f"found {len(previous)} embeddings generated. proceesing...")
-while i<len(fastafolder)//2:
+for i in range(startindex,endindex):
     file = fastafolder[i]
-
-    if file in previous:
-        i += 1
-        continue
 
     # Create a BytesIO buffer for the gzip file and extract the content
     with gzip.open(os.path.join(tempfolder,file),'rt') as handle:
@@ -64,4 +57,3 @@ while i<len(fastafolder)//2:
             pickle.dump(embeddings,handle)
         embeddings = []
     
-
