@@ -30,6 +30,10 @@ polars
 networkx
 transformers
 
+**Optional: only used when pulling data from google cloud**
+google-cloud-bigquery
+google-cloud-storage
+
 ## Results
 
 
