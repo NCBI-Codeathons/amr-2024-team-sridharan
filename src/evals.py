@@ -3,13 +3,11 @@ from tqdm import tqdm
 from model import HeteroLinkPredictionModel
 import pickle as pkl
 from generate_graph import pickle_path
-from loaders import val_loader, val_edge_label, val_edge_label_index, val_data
-from torch_geometric.loader import LinkNeighborLoader
+from loaders import val_loader
 from sklearn.metrics import roc_auc_score, confusion_matrix, precision_recall_curve, auc
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import torch_geometric.transforms as T
 
 # Set device to CUDA if available
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -51,7 +49,7 @@ def plot_confusion_matrix(cm, class_label, filename):
     plt.close()
 
 # Load the trained model
-model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
+model_path = '/shared_venv/model_checkpoint_50_0.001.pth'
 model = load_model(model_path, hidden_channels, out_channels)
 model = model.to(device)
 
