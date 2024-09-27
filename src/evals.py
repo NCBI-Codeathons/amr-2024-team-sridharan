@@ -3,7 +3,7 @@ from tqdm import tqdm
 from model import HeteroLinkPredictionModel
 import pickle as pkl
 from generate_graph import pickle_path
-from loaders import val_data
+from loaders import val_loader, val_edge_label, val_edge_label_index, val_data
 from torch_geometric.loader import LinkNeighborLoader
 from sklearn.metrics import roc_auc_score, confusion_matrix, precision_recall_curve, auc
 import matplotlib.pyplot as plt
@@ -17,6 +17,7 @@ print(f"Running on device: {device}")
 
 hidden_channels = 64
 out_channels = 32
+batch_size = 512
 
 # Function to load the trained model
 def load_model(model_path, hidden_channels, out_channels):
@@ -52,44 +53,11 @@ def plot_confusion_matrix(cm, class_label, filename):
 # Load the trained model
 model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
 model = load_model(model_path, hidden_channels, out_channels)
+model = model.to(device)
 
 # Load the graph data
 with open(pickle_path, 'rb') as f:
     data = pkl.load(f)
-
-# Apply RandomLinkSplit to generate edge labels
-transform = T.RandomLinkSplit(
-    num_val=0.1,
-    num_test=0.1,
-    is_undirected=True,
-    add_negative_train_samples=False,
-    edge_types=('protein', 'interacts_with', 'drug_class'),
-    rev_edge_types=('drug_class', 'interacted_by', 'protein'),
-)
-
-# Generate validation data with edge labels using RandomLinkSplit
-_, val_data, _ = transform(data)
-
-# Ensure validation data is on the correct device
-val_data = val_data.to(device)
-
-# Define the validation seed edges:
-edge_label_index = val_data['protein', 'interacts_with', 'drug_class'].edge_label_index
-edge_label = val_data['protein', 'interacts_with', 'drug_class'].edge_label
-
-# Validation data loader
-val_loader = LinkNeighborLoader(
-    data=val_data,
-    num_neighbors=[20, 10],
-    edge_label_index=(('protein', 'interacts_with', 'drug_class'), edge_label_index),
-    edge_label=edge_label,
-    batch_size=3 * 128,
-    shuffle=False,
-)
-
-
-
-# Evaluate the model on the validation set
 
 model.eval()
 preds = []
