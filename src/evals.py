@@ -8,95 +8,106 @@ from sklearn.metrics import roc_auc_score, confusion_matrix, precision_recall_cu
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import torch
+from sklearn.metrics import roc_auc_score, precision_recall_curve, auc, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from tqdm import tqdm
 
-# Set device to CUDA if available
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f"Running on device: {device}")
+# Assuming model is already trained and val_loader is defined
 
-hidden_channels = 64
-out_channels = 32
-batch_size = 512
-
-# Function to load the trained model
-def load_model(model_path, hidden_channels, out_channels):
-    model = HeteroLinkPredictionModel(hidden_channels, out_channels)
-    model = model.to(device)
-
-    # Load the model checkpoint
-    checkpoint = torch.load(model_path, map_location=device)
-    model.load_state_dict(checkpoint['model_state_dict'])
-    return model
-
-# Function to calculate confusion matrix elements
-def calculate_confusion_matrix(y_true, y_pred, threshold=0.5):
-    y_pred_bin = (y_pred >= threshold).astype(int)  # Binarize predictions based on threshold
-    tn, fp, fn, tp = confusion_matrix(y_true, y_pred_bin).ravel()
-    return tn, fp, fn, tp
-
-# Function to calculate AUPR and F1-Score
-def calculate_aupr(y_true, y_pred):
-    precision, recall, _ = precision_recall_curve(y_true, y_pred)
-    aupr = auc(recall, precision)
-    return aupr
-
-# Function to plot confusion matrix
-def plot_confusion_matrix(cm, class_label, filename):
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
-    plt.title(f"Confusion Matrix for Class {class_label}")
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-    plt.savefig(filename)
-    plt.close()
-
-# Load the trained model
-model_path = '/shared_venv/model_checkpoint_50_0.0001.pth'
-model = load_model(model_path, hidden_channels, out_channels)
-model = model.to(device)
-
-# Load the graph data
-with open(pickle_path, 'rb') as f:
-    data = pkl.load(f)
-
-model.eval()
-preds = []
-ground_truths = []
-
-pbar = tqdm(total=len(val_loader), desc="Evaluating")
-
-with torch.no_grad():
-        for batch in val_loader:
-            batch = batch.to(device)
-
+def evaluate_edge_prediction(model, loader, device='cuda'):
+    """
+    Evaluate edge prediction performance for a trained model.
+    
+    Arguments:
+    - model: The trained model.
+    - loader: DataLoader for validation or test data.
+    
+    Returns:
+    - A dictionary of evaluation metrics (AUC-ROC, AUPR, etc.)
+    """
+    model.eval()
+    preds, ground_truths = [], []
+    
+    # Iterate over validation or test set
+    for batch in tqdm(loader, desc="Evaluating"):
+        batch = batch.to(device)
+        
+        with torch.no_grad():
             # Forward pass
             pred = model(batch)
+            pred = torch.sigmoid(pred)  # Get probabilities
+            
+            # Ground truth for edge labels
             ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
-            pred = torch.sigmoid(pred) >= 0.5
+        
+        preds.append(pred.cpu().numpy())
+        ground_truths.append(ground_truth.cpu().numpy())
+    
+    # Concatenate all predictions and ground truth
+    preds = np.concatenate(preds)
+    ground_truths = np.concatenate(ground_truths)
+    
+    # Metrics calculation
+    results = {}
+    
+    # ROC-AUC
+    results['AUC-ROC'] = roc_auc_score(ground_truths, preds)
+    
+    # Precision-Recall Curve & AUPR
+    precision, recall, _ = precision_recall_curve(ground_truths, preds)
+    results['AUPR'] = auc(recall, precision)
+    
+    # Binarize predictions for confusion matrix
+    pred_binary = (preds >= 0.5).astype(int)
+    
+    # Confusion matrix
+    tn, fp, fn, tp = confusion_matrix(ground_truths, pred_binary).ravel()
+    results['confusion_matrix'] = {'TP': tp, 'FP': fp, 'TN': tn, 'FN': fn}
+    
+    return results
 
-            preds.append(pred)
-            ground_truths.append(batch['protein', 'interacts_with', 'drug_class'].edge_label)
 
-# Concatenate predictions and ground truths
-pred = torch.cat(preds, dim=0).cpu().numpy()
-ground_truth = torch.cat(ground_truths, dim=0).cpu().numpy()
-
-# Calculate AUC score
-'''auc_score = roc_auc_score(ground_truth, pred)
-print(f"\nValidation AUC: {auc_score:.4f}")
+def plot_metrics(results):
+    """
+    Plot AUPR and Confusion Matrix.
+    
+    Arguments:
+    - results: The dictionary of evaluation metrics returned by evaluate_edge_prediction
+    """
+    # Confusion Matrix plot
+    cm = np.array([[results['confusion_matrix']['TN'], results['confusion_matrix']['FP']], 
+                   [results['confusion_matrix']['FN'], results['confusion_matrix']['TP']]])
+    
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.savefig("confusion_matrix.png")
+    plt.close()
+''' # AUPR Plot (Precision-Recall Curve)
+    plt.plot(precision, recall, marker='.')
+    plt.title(f"AUPR: {results['AUPR']:.4f}")
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.savefig('aupr_plot.png')
+    plt.close()
 '''
-# Calculate confusion matrix and AUPR
-tn, fp, fn, tp = calculate_confusion_matrix(ground_truth, pred)
-print(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}")
 
-# Calculate AUPR
-'''aupr = calculate_aupr(ground_truth, pred)
-print(f"Validation AUPR: {aupr:.4f}")'''
+# Load your model and DataLoader (example)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = HeteroLinkPredictionModel(hidden_channels=64, out_channels=32).to(device)
+# Load model checkpoint, etc.
 
-# Plot and save confusion matrix
-cm = np.array([[tn, fp], [fn, tp]])
-plot_confusion_matrix(cm, class_label="All", filename="confusion_matrix_all_classes.png")
+# Evaluate on validation/test set
+results = evaluate_edge_prediction(model, val_loader, device)
 
-'''# Save AUPR and Confusion Matrix plot
-with open('evaluation_metrics.txt', 'w') as f:
-    f.write(f"AUC: {auc_score:.4f}\n")
-    f.write(f"AUPR: {aupr:.4f}\n")
-    f.write(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}\n")'''
+# Plot the evaluation metrics
+plot_metrics(results)
+
+# Print the metrics
+print(f"AUC-ROC: {results['AUC-ROC']:.4f}")
+print(f"AUPR: {results['AUPR']:.4f}")
+print(f"Confusion Matrix: {results['confusion_matrix']}")
