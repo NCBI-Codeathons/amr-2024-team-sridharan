@@ -33,7 +33,7 @@ def calculate_confusion_matrix(y_true, y_pred, threshold=0.5):
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred_bin).ravel()
     return tn, fp, fn, tp
 
-# Function to calculate AUPR and F1-Score
+# Function to calculate AUPR
 def calculate_aupr(y_true, y_pred):
     precision, recall, _ = precision_recall_curve(y_true, y_pred)
     aupr = auc(recall, precision)
@@ -47,6 +47,30 @@ def plot_confusion_matrix(cm, class_label, filename):
     plt.ylabel("Actual")
     plt.savefig(filename)
     plt.close()
+
+# Function to calculate AUC and AUPR for each class
+def evaluate_per_class(y_true, y_pred, num_classes):
+    auc_scores = []
+    aupr_scores = []
+    confusion_matrices = []
+
+    for i in range(num_classes):
+        y_true_class = y_true[:, i]
+        y_pred_class = y_pred[:, i]
+
+        # Calculate AUC
+        auc_score = roc_auc_score(y_true_class, y_pred_class)
+        auc_scores.append(auc_score)
+
+        # Calculate AUPR
+        aupr_score = calculate_aupr(y_true_class, y_pred_class)
+        aupr_scores.append(aupr_score)
+
+        # Calculate confusion matrix
+        tn, fp, fn, tp = calculate_confusion_matrix(y_true_class, y_pred_class)
+        confusion_matrices.append([[tn, fp], [fn, tp]])
+
+    return auc_scores, aupr_scores, confusion_matrices
 
 # Load the trained model
 model_path = '/shared_venv/model_checkpoint_50_0.0001.pth'
@@ -64,39 +88,41 @@ ground_truths = []
 pbar = tqdm(total=len(val_loader), desc="Evaluating")
 
 with torch.no_grad():
-        for batch in val_loader:
-            batch = batch.to(device)
+    for batch in val_loader:
+        batch = batch.to(device)
 
-            # Forward pass
-            pred = model(batch)
-            ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
-            pred = torch.sigmoid(pred) >= 0.5
-
-            preds.append(pred)
-            ground_truths.append(batch['protein', 'interacts_with', 'drug_class'].edge_label)
+        # Forward pass
+        pred = torch.sigmoid(model(batch))  # Get probabilities
+        preds.append(pred)
+        ground_truths.append(batch['protein', 'interacts_with', 'drug_class'].edge_label)
 
 # Concatenate predictions and ground truths
 pred = torch.cat(preds, dim=0).cpu().numpy()
 ground_truth = torch.cat(ground_truths, dim=0).cpu().numpy()
 
-# Calculate AUC score
-auc_score = roc_auc_score(ground_truth, pred)
-print(f"\nValidation AUC: {auc_score:.4f}")
+# Calculate per-class AUC, AUPR, and confusion matrices
+num_classes = ground_truth.shape[1]  # Assuming multi-label data with one-hot encoding
+auc_scores, aupr_scores, confusion_matrices = evaluate_per_class(ground_truth, pred, num_classes)
 
-# Calculate confusion matrix and AUPR
-tn, fp, fn, tp = calculate_confusion_matrix(ground_truth, pred)
-print(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}")
-
-# Calculate AUPR
-aupr = calculate_aupr(ground_truth, pred)
-print(f"Validation AUPR: {aupr:.4f}")
-
-# Plot and save confusion matrix
-cm = np.array([[tn, fp], [fn, tp]])
-plot_confusion_matrix(cm, class_label="All", filename="confusion_matrix_all_classes.png")
-
-# Save AUPR and Confusion Matrix plot
+# Save AUC, AUPR, and Confusion Matrix values to a text file
 with open('evaluation_metrics.txt', 'w') as f:
-    f.write(f"AUC: {auc_score:.4f}\n")
-    f.write(f"AUPR: {aupr:.4f}\n")
-    f.write(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}\n")
+    for i in range(num_classes):
+        f.write(f"Class {i}: AUC = {auc_scores[i]:.4f}, AUPR = {aupr_scores[i]:.4f}\n")
+        f.write(f"Confusion Matrix: TN={confusion_matrices[i][0][0]}, FP={confusion_matrices[i][0][1]}, FN={confusion_matrices[i][1][0]}, TP={confusion_matrices[i][1][1]}\n\n")
+
+# Plot confusion matrices and save AUPR curves
+for i in range(num_classes):
+    # Confusion matrix plot
+    cm = np.array(confusion_matrices[i])
+    plot_confusion_matrix(cm, class_label=f"Class {i}", filename=f"confusion_matrix_class_{i}.png")
+
+# Save summary AUPR plot
+plt.figure(figsize=(10, 6))
+plt.bar(range(num_classes), aupr_scores)
+plt.title('AUPR Scores per Class')
+plt.xlabel('Class')
+plt.ylabel('AUPR')
+plt.savefig('aupr_scores_per_class.png')
+plt.close()
+
+print("Evaluation completed, plots saved.")
