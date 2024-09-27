@@ -77,11 +77,11 @@ def evaluate_edge_prediction(model, loader, device='cuda'):
     results = {}
     
     # ROC-AUC
-    results['AUC-ROC'] = roc_auc_score(ground_truths, preds)
+    #results['AUC-ROC'] = roc_auc_score(ground_truths, preds)
     
     # Precision-Recall Curve & AUPR
-    precision, recall, _ = precision_recall_curve(ground_truths, preds)
-    results['AUPR'] = auc(recall, precision)
+    #precision, recall, _ = precision_recall_curve(ground_truths, preds)
+    #results['AUPR'] = auc(recall, precision)
     
     # Binarize predictions for confusion matrix
     pred_binary = (preds >= 0.5).astype(int)
@@ -131,6 +131,6 @@ results = evaluate_edge_prediction(model, val_loader, device)
 plot_metrics(results)
 
 # Print the metrics
-print(f"AUC-ROC: {results['AUC-ROC']:.4f}")
-print(f"AUPR: {results['AUPR']:.4f}")
+#print(f"AUC-ROC: {results['AUC-ROC']:.4f}")
+#print(f"AUPR: {results['AUPR']:.4f}")
 print(f"Confusion Matrix: {results['confusion_matrix']}")
