@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from sklearn.metrics import precision_recall_curve, auc, f1_score, confusion_matrix
+from sklearn.metrics import precision_recall_curve, auc, confusion_matrix, f1_score
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -13,7 +13,7 @@ hidden_channels = 64
 out_channels = 32
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Load the model from checkpoint
+# Load the trained model
 def load_model(model_path, hidden_channels, out_channels):
     model = HeteroLinkPredictionModel(hidden_channels, out_channels)
     model = model.to(device)
@@ -21,8 +21,8 @@ def load_model(model_path, hidden_channels, out_channels):
     model.load_state_dict(checkpoint['model_state_dict'])
     return model
 
-# Evaluate the model on the test dataset
-def evaluate(model, loader):
+# Test function to evaluate the model on test dataset
+def test(model, loader):
     model.eval()
     all_preds, all_labels = [], []
 
@@ -36,14 +36,19 @@ def evaluate(model, loader):
             pred = model(batch)
             ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
 
-            # Store predictions and ground truth
-            all_preds.append(torch.sigmoid(pred).cpu().numpy())
-            all_labels.append(ground_truth.cpu().numpy())
+            # Apply sigmoid to convert logits to probabilities
+            pred_prob = torch.sigmoid(pred).cpu().numpy()
+            ground_truth = ground_truth.cpu().numpy()
+
+            # Collect predictions and labels
+            all_preds.append(pred_prob)
+            all_labels.append(ground_truth)
 
             pbar.update(1)
 
     pbar.close()
 
+    # Concatenate all batches
     all_preds = np.concatenate(all_preds, axis=0)
     all_labels = np.concatenate(all_labels, axis=0)
 
@@ -54,6 +59,7 @@ def calculate_metrics(y_true, y_pred, threshold=0.5):
     precision, recall, _ = precision_recall_curve(y_true, y_pred)
     aupr = auc(recall, precision)
 
+    # Binary classification threshold
     y_pred_bin = (y_pred >= threshold).astype(int)
     f1 = f1_score(y_true, y_pred_bin)
 
@@ -92,7 +98,8 @@ if __name__ == "__main__":
     model = load_model(model_path, hidden_channels, out_channels)
 
     # Evaluate the model on the test set
-    y_preds, y_true = evaluate(model, test_loader)
+    y_preds, y_true = test(model, test_loader)
+    print(f"Test results: {y_preds.shape}, {y_true.shape}")
 
     # Initialize lists to store AUPR, Fmax, and confusion matrix elements for each drug class
     auprs, fmax_scores = [], []
@@ -117,7 +124,7 @@ if __name__ == "__main__":
         auprs.append(aupr)
         fmax_scores.append(fmax)
 
-        # Save Confusion Matrix plot
+        # Save Confusion Matrix plot for each class
         plot_confusion_matrix(tp, fp, tn, fn, class_label=i, filename=f'confusion_matrix_class_{i}.png')
 
     # Plot and save violin plots for AUPR and Fmax scores
