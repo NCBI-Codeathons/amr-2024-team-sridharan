@@ -1,12 +1,9 @@
 import torch
-import torch.nn.functional as F
 from tqdm import tqdm
-from torch.optim import Adam
 from model import HeteroLinkPredictionModel
-from loaders import train_loader, val_loader, test_loader
 import pickle as pkl
 from generate_graph import pickle_path
-from loaders import train_loader, val_loader, test_loaders, train_data, test_data, val_data
+from loaders import val_loader, val_data
 from torch_geometric.loader import LinkNeighborLoader
 from sklearn.metrics import roc_auc_score
 
