@@ -36,7 +36,7 @@ def load_model(model_path, hidden_channels, out_channels):
     return model
 
 # Load the trained model
-model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
+model_path = '/shared_venv/model_checkpoint_50_0.0001.pth'
 model = load_model(model_path, hidden_channels, out_channels)
 
 
