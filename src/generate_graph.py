@@ -16,7 +16,7 @@ Edge Indices: [2, num_edges] #This we have to create a function that makes COO m
 '''
 #num_proteins = 12
 embedding_dim =480
-num_drug_classes = 10
+num_drug_classes = 43
 
 #protein_embeddings = torch.randn(num_proteins, embedding_dim) #(N, 280)
 #drug_class_embeddings = torch.randn(num_drug_classes, embedding_dim) #binary matrix, multihot encoding

@@ -5,7 +5,7 @@ import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 pickle_path = "/shared_venv/hetero_graph_data.pkl"
-
+batch_size=512
 # Loading the graph data
 with open(pickle_path, 'rb') as f:
     data = pkl.load(f)
@@ -48,7 +48,7 @@ train_loader = LinkNeighborLoader(
     neg_sampling_ratio=2.0,  
     edge_label_index=(('protein', 'interacts_with', 'drug_class'), edge_label_index),
     edge_label=edge_label,  
-    batch_size=128,  
+    batch_size=batch_size,  
     shuffle=True,
 )
 
@@ -62,7 +62,7 @@ val_loader = LinkNeighborLoader(
     neg_sampling_ratio=2.0,
     edge_label_index=(('protein', 'interacts_with', 'drug_class'), val_edge_label_index),
     edge_label=val_edge_label,
-    batch_size=128,
+    batch_size=batch_size,
     shuffle=False,
 )
 
@@ -76,7 +76,7 @@ test_loader = LinkNeighborLoader(
     neg_sampling_ratio=2.0,
     edge_label_index=(('protein', 'interacts_with', 'drug_class'), test_edge_label_index),
     edge_label=test_edge_label,
-    batch_size=128,
+    batch_size=batch_size,
     shuffle=False,
 )
 

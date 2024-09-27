@@ -125,8 +125,8 @@ def test(model, loader):
     return total_correct / total_examples
 
 
-epochs=10
-lr=0.001
+epochs=50
+lr=0.0001
 
 model = HeteroLinkPredictionModel(hidden_channels, out_channels)
 model = model.to(device)
