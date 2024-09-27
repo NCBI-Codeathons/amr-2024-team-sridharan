@@ -5,7 +5,7 @@ from torch.optim import Adam
 from model import HeteroLinkPredictionModel
 from loaders import train_loader, val_loader, test_loader
 import pickle as pkl
-from generate_graph import pickle_path
+# from generate_graph import pickle_path
 
 
 hidden_channels = 64
@@ -15,7 +15,7 @@ num_heads = 4
 '''
 loading the graph data
 '''
-
+pickle_path = "/shared_venv/hetero_graph_data.pkl"
 with open(pickle_path, 'rb') as f:
     data = pkl.load(f)
 
