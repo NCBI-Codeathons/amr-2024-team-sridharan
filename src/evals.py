@@ -87,15 +87,27 @@ val_loader = LinkNeighborLoader(
     shuffle=False,
 )
 
+
+
 # Evaluate the model on the validation set
+
+model.eval()
 preds = []
 ground_truths = []
-for sampled_data in tqdm(val_loader, desc="Evaluating"):
-    with torch.no_grad():
-        sampled_data = sampled_data.to(device)
-        # Make predictions
-        preds.append(torch.sigmoid(model(sampled_data)))  # Sigmoid for probabilities
-        ground_truths.append(sampled_data['protein', 'interacts_with', 'drug_class'].edge_label)
+
+pbar = tqdm(total=len(val_loader), desc="Evaluating")
+
+with torch.no_grad():
+        for batch in val_loader:
+            batch = batch.to(device)
+
+            # Forward pass
+            pred = model(batch)
+            ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
+            pred = torch.sigmoid(pred) >= 0.5
+
+            preds.append(pred)
+            ground_truths.append(batch['protein', 'interacts_with', 'drug_class'].edge_label)
 
 # Concatenate predictions and ground truths
 pred = torch.cat(preds, dim=0).cpu().numpy()
