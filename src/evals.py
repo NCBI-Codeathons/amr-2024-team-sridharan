@@ -40,6 +40,8 @@ def evaluate(model, loader):
             all_preds.append(torch.sigmoid(pred).cpu().numpy())
             all_labels.append(ground_truth.cpu().numpy())
 
+            print("all preds len", len(all_preds), "all labels len", len(all_labels))
+
             pbar.update(1)
 
     pbar.close()
