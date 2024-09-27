@@ -17,6 +17,29 @@ from tqdm import tqdm
 
 # Assuming model is already trained and val_loader is defined
 
+
+# Set device to CUDA if available
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Running on device: {device}")
+
+hidden_channels = 64
+out_channels = 32
+
+# Function to load the trained model
+def load_model(model_path, hidden_channels, out_channels):
+    model = HeteroLinkPredictionModel(hidden_channels, out_channels)
+    model = model.to(device)
+
+    # Load the model checkpoint
+    checkpoint = torch.load(model_path, map_location=device)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    return model
+
+# Load the trained model
+model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
+model = load_model(model_path, hidden_channels, out_channels)
+
+
 def evaluate_edge_prediction(model, loader, device='cuda'):
     """
     Evaluate edge prediction performance for a trained model.
@@ -98,7 +121,7 @@ def plot_metrics(results):
 
 # Load your model and DataLoader (example)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = HeteroLinkPredictionModel(hidden_channels=64, out_channels=32).to(device)
+#model = HeteroLinkPredictionModel(hidden_channels=64, out_channels=32).to(device)
 # Load model checkpoint, etc.
 
 # Evaluate on validation/test set
