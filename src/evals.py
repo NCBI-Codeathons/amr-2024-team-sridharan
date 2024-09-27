@@ -40,11 +40,16 @@ def test(model, loader):
 
             # Forward pass
             pred = model(batch)
+            print('len(pred): ',len(pred))
             ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
+            print('len(ground_truth): ',len(ground_truth))
+
 
             # Store predictions and ground truth
             all_preds.append(torch.sigmoid(pred).cpu().numpy())
             all_labels.append(ground_truth.cpu().numpy())
+            print('all_preds: ',len(all_preds))
+            print('all_labels: ',len(all_labels))
 
             pbar.update(1)
 
