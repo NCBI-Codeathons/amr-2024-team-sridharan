@@ -11,20 +11,6 @@ To define the biological problem in a clear and focused way, the background sect
 
 ---
 
-## Background
-
-**Antimicrobial resistance (AMR)** is one of the most significant global health threats. It occurs when microorganisms like bacteria, viruses, fungi, and parasites evolve to resist the effects of antimicrobial drugs, rendering these treatments ineffective. As a result, infections that were once easily treatable can become life-threatening, leading to higher medical costs, longer hospital stays, and increased mortality.
-
-The rise of AMR is particularly concerning in **ESKAPE pathogens** (Enterococcus faecium, Staphylococcus aureus, Klebsiella pneumoniae, Acinetobacter baumannii, Pseudomonas aeruginosa, and Enterobacter species). These pathogens are responsible for a large proportion of hospital-acquired infections and are known for their ability to "escape" the effects of antimicrobial drugs, contributing to the growing problem of multidrug resistance.
-
-A key challenge in combating AMR is identifying **novel resistance mechanisms**. Many proteins that confer resistance have not yet been characterized, and mutations in bacterial genomes can lead to new forms of resistance that are not well understood. Traditional laboratory methods to detect and study these resistance mechanisms are time-consuming and often lag behind the emergence of new resistances.
-
-### The Role of Graph Representation Learning in AMR Research
-
-**Graph representation learning** provides a powerful computational approach to address this challenge. By representing proteins and their interactions with drugs as graphs, we can model complex relationships between these entities. In particular, **Graph Neural Networks (GNNs)** can learn from the structure of the protein-drug interaction networks to predict unknown or emerging AMR mechanisms. 
-
-In this project, **GrAMR** (Graph-based Antimicrobial Resistance) aims to leverage these techniques to identify novel AMR-related resistances. By constructing a graph where nodes represent proteins and drug classes, and edges represent known AMR interactions, we can train a model to predict whether uncharacterized proteins or mutations are likely to exhibit resistance. This has the potential to provide early warnings of new resistances, guiding future drug development and helping prioritize laboratory validation efforts.
-
 ## Project Goals
 
 This project aims to idenfity novel antibiotic resistances in ESKAPE organisms using graph representation learning
