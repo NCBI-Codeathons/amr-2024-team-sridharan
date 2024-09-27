@@ -7,10 +7,6 @@ List of participants and affiliations:
 - Nuwan Medawaththa, University of Colombo
 - Ruwanthika Premarathne, University of Colombo
 
-To define the biological problem in a clear and focused way, the background section should explain why understanding **antimicrobial resistance (AMR)** is critical and how the research problem relates to this larger challenge. Here's a suggestion for the **Background** section:
-
----
-
 ## Project Goals
 
 This project aims to idenfity novel antibiotic resistances in ESKAPE organisms using graph representation learning
@@ -47,6 +43,7 @@ The successful implementation  of GrAMR would allow for users to determine possi
 
 ## Results
 
+<img src=misc/under_construction.webp width=300> 
 
 ## Future Work
 
