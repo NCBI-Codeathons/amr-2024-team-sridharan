@@ -80,23 +80,23 @@ pred = torch.cat(preds, dim=0).cpu().numpy()
 ground_truth = torch.cat(ground_truths, dim=0).cpu().numpy()
 
 # Calculate AUC score
-auc_score = roc_auc_score(ground_truth, pred)
+'''auc_score = roc_auc_score(ground_truth, pred)
 print(f"\nValidation AUC: {auc_score:.4f}")
-
+'''
 # Calculate confusion matrix and AUPR
 tn, fp, fn, tp = calculate_confusion_matrix(ground_truth, pred)
 print(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}")
 
 # Calculate AUPR
-aupr = calculate_aupr(ground_truth, pred)
-print(f"Validation AUPR: {aupr:.4f}")
+'''aupr = calculate_aupr(ground_truth, pred)
+print(f"Validation AUPR: {aupr:.4f}")'''
 
 # Plot and save confusion matrix
 cm = np.array([[tn, fp], [fn, tp]])
 plot_confusion_matrix(cm, class_label="All", filename="confusion_matrix_all_classes.png")
 
-# Save AUPR and Confusion Matrix plot
+'''# Save AUPR and Confusion Matrix plot
 with open('evaluation_metrics.txt', 'w') as f:
     f.write(f"AUC: {auc_score:.4f}\n")
     f.write(f"AUPR: {aupr:.4f}\n")
-    f.write(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}\n")
+    f.write(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}\n")'''
