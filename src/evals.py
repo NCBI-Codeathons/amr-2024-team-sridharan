@@ -1,19 +1,25 @@
 import torch
 import torch.nn.functional as F
-from sklearn.metrics import precision_recall_curve, auc, confusion_matrix, f1_score
 from tqdm import tqdm
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
+from torch.optim import Adam
 from model import HeteroLinkPredictionModel
-from loaders import test_loader
+from loaders import train_loader, val_loader, test_loader
+import pickle as pkl
+from generate_graph import pickle_path
+from loaders import train_loader, val_loader, test_loaders, train_data, test_data, val_data
+from torch_geometric.loader import LinkNeighborLoader
+from sklearn.metrics import roc_auc_score
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 hidden_channels = 64
 out_channels = 32
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+num_heads = 4
 
-# Linear layer to transform drug_class embeddings to the expected dimension
-embedding_transform = torch.nn.Linear(43, 64).to(device)  # Input size: 43, output size: 64
+'''
+loading the graph data
+'''
+
 
 def load_model(model_path, hidden_channels, out_channels):
     # Initialize the model
@@ -25,111 +31,35 @@ def load_model(model_path, hidden_channels, out_channels):
     model.load_state_dict(checkpoint['model_state_dict'])
     return model
 
-def test(model, loader):
-    model.eval()
-    all_preds, all_labels = [], []
-
-    pbar = tqdm(total=len(loader), desc="Evaluating")
-
-    with torch.no_grad():
-        for batch in loader:
-            batch = batch.to(device)
-
-            # Transform the drug_class embeddings to match the expected dimension
-            batch.x_dict['drug_class'] = embedding_transform(batch.x_dict['drug_class'])
-
-            # Forward pass
-            pred = model(batch)
-            print('len(pred): ',len(pred))
-            ground_truth = batch['protein', 'interacts_with', 'drug_class'].edge_label
-            print('len(ground_truth): ',len(ground_truth))
-
-
-            # Store predictions and ground truth
-            all_preds.append(torch.sigmoid(pred).cpu().numpy())
-            all_labels.append(ground_truth.cpu().numpy())
-            print('all_preds: ',len(all_preds))
-            print('all_labels: ',len(all_labels))
-
-            pbar.update(1)
-
-    pbar.close()
-
-    all_preds = np.concatenate(all_preds, axis=0)
-    all_labels = np.concatenate(all_labels, axis=0)
-
-    return all_preds, all_labels
-
-def calculate_metrics(y_true, y_pred, threshold=0.5):
-    # Binarize predictions based on the threshold
-    y_pred_bin = (y_pred >= threshold).astype(int)
-
-    # Precision-Recall curve and AUC
-    precision, recall, _ = precision_recall_curve(y_true, y_pred)
-    aupr = auc(recall, precision)
-
-    # F1-score
-    f1 = f1_score(y_true, y_pred_bin)
-
-    return aupr, f1
-
-def plot_violin(metrics, metric_name, filename):
-    plt.figure(figsize=(10, 6))
-    sns.violinplot(data=metrics)
-    plt.title(f'{metric_name} for each drug class')
-    plt.xlabel('Drug Class')
-    plt.ylabel(metric_name)
-    plt.savefig(filename)
-    plt.close()
-
-def plot_confusion_matrix(tp, fp, tn, fn, class_label, filename):
-    cm = np.array([[tn, fp], [fn, tp]])
-    disp = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
-    plt.title(f'Confusion Matrix for Drug Class {class_label}')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.savefig(filename)
-    plt.close()
-
-if __name__ == "__main__":
     # Load the trained model
-    model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
-    model = load_model(model_path, hidden_channels, out_channels)
+model_path = '/shared_venv/model_checkpoint_10_0.001.pth'
+model = load_model(model_path, hidden_channels, out_channels)
 
-    # Evaluate the model on the test set
-    y_preds, y_true = test(model, test_loader)
-    print("Test results:", y_preds.shape, y_true.shape)
+with open(pickle_path, 'rb') as f:
+    data = pkl.load(f)
 
-    # Initialize lists to store AUPR and Fmax for each drug class
-    auprs, f1_scores = [], []
+# Define the validation seed edges:
+edge_label_index = val_data['protein', 'interacts_with', 'drug_class'].edge_label_index
+edge_label = val_data['drug_class', 'interacts_with', 'protein'].edge_label
+val_loader = LinkNeighborLoader(
+    data=val_data,
+    num_neighbors=[20, 10],
+    edge_label_index=(('protein', 'interacts_with', 'drug_class'), edge_label_index),
+    edge_label=edge_label,
+    batch_size=3 * 128,
+    shuffle=False,
+)
+sampled_data = next(iter(val_loader))
 
-    # Confusion matrix elements for each label
-    tps, fps, tns, fns = [], [], [], []
-
-    num_classes = y_true.shape[1]  # Number of drug classes
-
-    for i in range(num_classes):
-        # For each class (drug), get the true and predicted values
-        y_true_class = y_true[:, i]
-        y_pred_class = y_preds[:, i]
-
-        # Calculate TP, FP, TN, FN
-        tn, fp, fn, tp = confusion_matrix(y_true_class, (y_pred_class >= 0.5).astype(int)).ravel()
-        tps.append(tp)
-        fps.append(fp)
-        tns.append(tn)
-        fns.append(fn)
-
-        # Calculate AUPR and F1 for this class
-        aupr, f1 = calculate_metrics(y_true_class, y_pred_class)
-        auprs.append(aupr)
-        f1_scores.append(f1)
-
-        # Save Confusion Matrix plot
-        plot_confusion_matrix(tp, fp, tn, fn, class_label=i, filename=f'confusion_matrix_class_{i}.png')
-
-    # Plot and save violin plots for AUPR and F1 scores
-    plot_violin(auprs, metric_name="AUPR", filename="aupr_violin_plot.png")
-    plot_violin(f1_scores, metric_name="Fmax", filename="fmax_violin_plot.png")
-
-    print(f'Evaluation completed. Plots saved.')
+preds = []
+ground_truths = []
+for sampled_data in tqdm.tqdm(val_loader):
+    with torch.no_grad():
+        sampled_data.to(device)
+        preds.append(model(sampled_data))
+        ground_truths.append(sampled_data['protein', 'interacts_with', 'drug_class'].edge_label)
+pred = torch.cat(preds, dim=0).cpu().numpy()
+ground_truth = torch.cat(ground_truths, dim=0).cpu().numpy()
+auc = roc_auc_score(ground_truth, pred)
+print()
+print(f"Validation AUC: {auc:.4f}")
