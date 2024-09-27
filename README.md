@@ -47,7 +47,7 @@ The successful implementation  of GrAMR would allow for users to determine possi
 
 ## Results
 
-![WIP](misc/under_construction.png)
+<img src=misc/under_construction.png width=300> 
 
 ## Future Work
 
