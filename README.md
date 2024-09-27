@@ -43,7 +43,7 @@ The successful implementation  of GrAMR would allow for users to determine possi
 
 ## Results
 
-<img src=misc/under_construction.png width=300> 
+<img src=misc/image.webp width=300> 
 
 ## Future Work
 
