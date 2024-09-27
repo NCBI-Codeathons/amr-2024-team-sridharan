@@ -3,8 +3,9 @@ import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv, GCNConv, GATConv, to_hetero
 from torch.nn import Linear
 import pickle as pkl
-from generate_graph import pickle_path
+# from generate_graph import pickle_path
 
+pickle_path = "/shared_venv/hetero_graph_data.pkl"
 # Load the graph data
 with open(pickle_path, 'rb') as f:
     data = pkl.load(f)
