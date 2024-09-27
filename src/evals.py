@@ -87,6 +87,7 @@ if __name__ == "__main__":
 
     # Evaluate the model on the test set
     y_preds, y_true = evaluate(model, test_loader)
+    print("length of y_preds",len(y_preds), 'length of y_true', len(y_true))
 
     # Initialize lists to store AUPR and F1 for each drug class
     auprs, f1_scores = [], []
